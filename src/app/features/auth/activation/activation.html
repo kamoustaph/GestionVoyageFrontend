@@ -1,0 +1,56 @@
+<div class="activation-container">
+  <div class="background-image"></div>
+  
+  <mat-card class="activation-card">
+    <mat-card-header>
+      <div class="header-content">
+        <mat-card-title>Activation du compte</mat-card-title>
+        <mat-card-subtitle>
+          Entrez le code reçu par email pour activer votre compte
+        </mat-card-subtitle>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="activationForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Code d'activation</mat-label>
+          <input matInput formControlName="activationCode" 
+                 placeholder="XXXXXX" maxlength="6"
+                 [class.invalid]="activationCode?.invalid && activationCode?.touched">
+          <mat-icon matPrefix>vpn_key</mat-icon>
+          <mat-hint align="end">{{activationCode?.value?.length || 0}}/6</mat-hint>
+          
+          <mat-error *ngIf="activationCode?.hasError('required')">
+            Le code d'activation est requis
+          </mat-error>
+          <mat-error *ngIf="activationCode?.hasError('minlength') || activationCode?.hasError('maxlength')">
+            Le code doit contenir exactement 6 caractères
+          </mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" 
+                type="submit" 
+                [disabled]="activationForm.invalid || isLoading"
+                class="full-width submit-button">
+          <span *ngIf="!isLoading">Activer le compte</span>
+          <span *ngIf="isLoading" class="loading-content">
+            <mat-spinner diameter="20" strokeWidth="2"></mat-spinner>
+            Activation en cours...
+          </span>
+        </button>
+      </form>
+
+      <div class="help-section">
+        <p>Vous n'avez pas reçu le code ?</p>
+        <a mat-button color="primary" routerLink="/resend-activation">
+          Renvoyer le code d'activation
+        </a>
+      </div>
+
+      <div class="login-link">
+        <p>Déjà activé ? <a mat-button color="primary" routerLink="/login">Connectez-vous</a></p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

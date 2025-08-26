@@ -1,0 +1,113 @@
+<div class="register-container">
+  <div class="background-image"></div>
+  
+  <mat-card class="register-card" [@fadeIn]>
+    <mat-card-header>
+      <div class="header-content">
+        <mat-card-title>Créer un compte</mat-card-title>
+        <mat-card-subtitle>
+          Système de gestion de voyages<br>
+          Rejoignez-nous pour planifier vos voyages
+        </mat-card-subtitle>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Bouton Google OAuth2 -->
+      <div class="oauth-section">
+        <button mat-raised-button class="google-btn full-width" (click)="loginWithGoogle()">
+          <img src="/assets/google-logo.svg" alt="Google" class="google-logo">
+          S'inscrire avec Google
+        </button>
+        
+        <mat-divider class="divider">
+          <span class="divider-text">ou</span>
+        </mat-divider>
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="username" type="email" required>
+          <mat-icon matSuffix class="material-icons">email</mat-icon>
+          <mat-error *ngIf="username?.hasError('required')">
+            Email requis
+          </mat-error>
+          <mat-error *ngIf="username?.hasError('email')">
+            Format email invalide
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nom complet</mat-label>
+          <input matInput formControlName="name" required>
+          <mat-icon matSuffix class="material-icons">person</mat-icon>
+          <mat-error *ngIf="name?.hasError('required')">
+            Nom requis
+          </mat-error>
+          <mat-error *ngIf="name?.hasError('minlength')">
+            Minimum 2 caractères
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Téléphone</mat-label>
+          <input matInput formControlName="phone" type="tel" required>
+          <mat-icon matSuffix class="material-icons">phone</mat-icon>
+          <mat-error *ngIf="phone?.hasError('required')">
+            Téléphone requis
+          </mat-error>
+          <mat-error *ngIf="phone?.hasError('pattern')">
+            9 à 13 chiffres requis
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Mot de passe</mat-label>
+          <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" required>
+          <button type="button" mat-icon-button matSuffix (click)="hidePassword = !hidePassword">
+            <mat-icon class="material-icons">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error *ngIf="password?.hasError('required')">
+            Mot de passe requis
+          </mat-error>
+          <mat-error *ngIf="password?.hasError('minlength')">
+            8 caractères minimum
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Rôle</mat-label>
+          <mat-select formControlName="role" required>
+            <mat-option *ngFor="let role of roles" [value]="role">
+              {{ getRoleDisplay(role) }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix class="material-icons">arrow_drop_down</mat-icon>
+          <mat-error *ngIf="role?.hasError('required')">
+            Rôle requis
+          </mat-error>
+        </mat-form-field>
+
+        <div *ngIf="errorMessage" class="error-message">
+          <mat-icon>error</mat-icon> {{ errorMessage }}
+        </div>
+
+        <button 
+          mat-raised-button 
+          color="primary" 
+          type="submit" 
+          [disabled]="registerForm.invalid || isLoading" 
+          class="full-width submit-button"
+        >
+          <span *ngIf="!isLoading">S'inscrire</span>
+          <span *ngIf="isLoading">Inscription en cours...</span>
+        </button>
+      </form>
+
+      <div class="login-link">
+        <p>Déjà inscrit ? <a mat-button color="primary" routerLink="/login">Connectez-vous</a></p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

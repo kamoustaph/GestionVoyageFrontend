@@ -1,0 +1,81 @@
+<div class="login-container">
+  <div class="background-image"></div>
+  
+  <mat-card class="login-card">
+    <mat-card-header>
+      <div class="header-content">
+        <mat-card-title>Connexion</mat-card-title>
+        <mat-card-subtitle>
+          Système de gestion de voyages<br>
+          Accédez à votre espace personnel
+        </mat-card-subtitle>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="oauth-section">
+        <button mat-raised-button class="google-btn full-width" (click)="loginWithGoogle()">
+          <img src="/assets/google-logo.svg" alt="Google" class="google-logo">
+          Se connecter avec Google
+        </button>
+        
+        <mat-divider class="divider">
+          <span class="divider-text">ou</span>
+        </mat-divider>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="username" 
+                 placeholder="exemple@email.com" type="email">
+          <mat-icon matPrefix>email</mat-icon>
+          <mat-error *ngIf="username?.hasError('required')">
+            Email requis
+          </mat-error>
+          <mat-error *ngIf="username?.hasError('email')">
+            Format email invalide
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Mot de passe</mat-label>
+          <input matInput formControlName="password" 
+                 [type]="hidePassword ? 'password' : 'text'" 
+                 placeholder="••••••••">
+          <mat-icon matPrefix>lock</mat-icon>
+          <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" 
+                  type="button" [attr.aria-label]="'Toggle password visibility'">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="password?.hasError('required')">
+            Mot de passe requis
+          </mat-error>
+        </mat-form-field>
+
+        <div class="forgot-password">
+          <a mat-button color="primary" routerLink="/forgot-password">
+            Mot de passe oublié ?
+          </a>
+        </div>
+
+        <button mat-raised-button color="primary" 
+                type="submit" 
+                [disabled]="loginForm.invalid || isLoading"
+                class="full-width submit-button">
+          <span *ngIf="!isLoading">Se connecter</span>
+          <span *ngIf="isLoading" class="loading-content">
+            <mat-spinner diameter="20" strokeWidth="2"></mat-spinner>
+            Connexion...
+          </span>
+        </button>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <div class="register-link">
+        <p>Pas encore inscrit ? <a mat-button color="primary" routerLink="/register">Créer un compte</a></p>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+</div>

@@ -1,0 +1,123 @@
+.activation-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+  position: relative;
+}
+
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('/assets/activation-bg.jpg') center/cover;
+  opacity: 0.1;
+}
+
+.activation-card {
+  width: 100%;
+  max-width: 400px;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.header-content {
+  text-align: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+mat-card-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+mat-card-subtitle {
+  color: #666;
+  line-height: 1.4;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.submit-button {
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 8px;
+  height: 48px;
+}
+
+.loading-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.help-section {
+  text-align: center;
+  margin: 24px 0;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.help-section p {
+  margin: 0 0 8px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 16px;
+  color: #666;
+}
+
+.login-link a {
+  font-weight: 500;
+}
+
+/* Styles pour les SnackBars */
+.snackbar-success {
+  background-color: #4caf50;
+  color: white;
+}
+
+.snackbar-error {
+  background-color: #f44336;
+  color: white;
+}
+
+.snackbar-warning {
+  background-color: #ff9800;
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .activation-container {
+    padding: 10px;
+  }
+  
+  .activation-card {
+    margin: 10px;
+  }
+  
+  mat-card-title {
+    font-size: 20px;
+  }
+}
+
+input.invalid {
+  border-color: #f44336;
+}
