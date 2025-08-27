@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #1976d2;
   padding: 20px;
   position: relative;
 }
@@ -59,7 +59,8 @@ mat-card-subtitle {
 }
 
 .google-btn:hover {
-  background: #f5f5f5;
+  background: #1976d2;
+  color: white; 
 }
 
 .google-logo {
@@ -98,6 +99,11 @@ mat-card-subtitle {
   font-weight: 600;
   margin-top: 8px;
   height: 48px;
+}
+.submit-button:hover {
+  background: #1976d2;
+  color: white;
+  font-size: 20px;
 }
 
 .loading-content {

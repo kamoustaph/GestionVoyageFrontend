@@ -1,4 +1,3 @@
-/* Variables CSS pour la cohérence */
 :root {
   --primary-color: #1976d2;
   --accent-color: #ff4081;
@@ -11,7 +10,6 @@
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Réinitialisation des marges pour le body */
 body {
   margin: 0;
   padding: 0;
@@ -19,7 +17,6 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
-/* Navigation */
 .nav-toolbar {
   position: fixed;
   top: 0;
@@ -129,7 +126,6 @@ body {
   color: var(--warn-color);
 }
 
-/* Hero Section - Version améliorée */
 .hero-section {
   min-height: 100vh;
   background: linear-gradient(135deg, rgba(162, 205, 247, 0.9) 0%, rgba(19, 147, 252, 0.9) 100%), 
@@ -281,7 +277,6 @@ body {
   font-weight: 500;
 }
 
-/* Sections communes */
 .section-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -307,7 +302,6 @@ body {
   margin: 0 auto;
 }
 
-/* Features Section */
 .features-section {
   padding: var(--section-padding);
   background-color: #f8f9fa;
@@ -348,7 +342,6 @@ body {
   line-height: 1.6;
 }
 
-/* Benefits Section */
 .benefits-section {
   padding: var(--section-padding);
   background: #1976d2;
@@ -419,7 +412,6 @@ body {
   color: #fff;
 }
 
-/* Testimonials Section */
 .testimonials-section {
   padding: var(--section-padding);
   background-color: #fff; 
@@ -473,7 +465,6 @@ body {
   margin: 0;
 }
 
-/* CTA Section */
 .cta-section {
   padding: var(--section-padding);
   background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%);
@@ -514,7 +505,6 @@ body {
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
 }
 
-/* Footer */
 .footer-section {
   background-color: #1976d2;
   color: #fff;
@@ -593,12 +583,10 @@ body {
   color: rgba(255, 255, 255, 0.6);
 }
 
-/* Ajout d'espacement entre les sections */
 .features-section, .benefits-section, .testimonials-section, .cta-section {
   margin-top: 2rem;
 }
 
-/* Responsive Design */
 @media (max-width: 1024px) {
   .hero-title {
     font-size: 3rem;
@@ -672,7 +660,6 @@ body {
     align-items: center;
   }
   
-  /* Ajustement de l'espacement sur mobile */
   .features-section, .benefits-section, .testimonials-section, .cta-section {
     margin-top: 1rem;
   }
@@ -723,7 +710,6 @@ body {
   }
 }
 
-/* Animations personnalisées */
 @keyframes pulse {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.05); }
@@ -733,7 +719,6 @@ body {
   animation: pulse 2s infinite;
 }
 
-/* Animation d'apparition */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -749,7 +734,6 @@ body {
   animation: fadeInUp 1s ease-out forwards;
 }
 
-/* Snackbar styles personnalisés */
 ::ng-deep .snackbar-success {
   background-color: var(--success-color) !important;
   color: white !important;
@@ -765,7 +749,6 @@ body {
   color: white !important;
 }
 
-/* Accessibilité */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
@@ -774,14 +757,12 @@ body {
   }
 }
 
-/* Focus styles pour l'accessibilité */
 button:focus,
 a:focus {
   outline: 2px solid var(--primary-color);
   outline-offset: 2px;
 }
 
-/* Loading states */
 .loading-overlay {
   position: fixed;
   top: 0;
@@ -795,7 +776,6 @@ a:focus {
   z-index: 9999;
 }
 
-/* Scroll smooth */
 html {
   scroll-behavior: smooth;
 }

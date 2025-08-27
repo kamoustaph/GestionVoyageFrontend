@@ -4,26 +4,37 @@
       <mat-icon class="brand-icon">flight</mat-icon>
       <span class="brand-text">TravelEase</span>
     </div>
-    
+
     <nav class="nav-links" [@slideInRight]>
       <button mat-button (click)="scrollToSection('features')">Services</button>
-      <button mat-button (click)="scrollToSection('testimonials')">Témoignages</button>
+      <button mat-button (click)="scrollToSection('testimonials')">
+        Témoignages
+      </button>
       <button mat-button (click)="scrollToSection('contact')">Contact</button>
-      
+
       <div class="auth-buttons">
         <ng-container *ngIf="!isAuthenticated; else authenticatedMenu">
           <button mat-button (click)="onLogin()" class="login-btn">
             <mat-icon>login</mat-icon>
             Connexion
           </button>
-          <button mat-raised-button color="accent" (click)="onRegister()" class="register-btn">
+          <button
+            mat-raised-button
+            color="accent"
+            (click)="onRegister()"
+            class="register-btn"
+          >
             <mat-icon>person_add</mat-icon>
             Inscription
           </button>
         </ng-container>
-        
+
         <ng-template #authenticatedMenu>
-          <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-avatar">
+          <button
+            mat-icon-button
+            [matMenuTriggerFor]="userMenu"
+            class="user-avatar"
+          >
             <mat-icon>account_circle</mat-icon>
           </button>
           <mat-menu #userMenu="matMenu">
@@ -45,57 +56,73 @@
 </mat-toolbar>
 
 <section class="hero-section">
-        <div class="hero-content">
-            <div class="hero-text">
-                <h1 class="hero-title">
-                    Explorez le Monde avec <span class="accent-text">TravelEase</span>
-                </h1>
-                <p class="hero-subtitle">
-                    Découvrez des destinations extraordinaires avec notre plateforme tout-en-un. 
-                    Des vols aux hôtels, des activités aux expériences locales, nous simplifions 
-                    chaque étape de votre voyage pour que vous puissiez vous concentrer sur 
-                    l'essentiel : créer des souvenirs inoubliables.
-                </p>
-                <div class="hero-actions">
-                    <button class="cta-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <polygon points="10 8 16 12 10 16 10 8"></polygon>
-                        </svg>
-                        Commencer l'aventure
-                    </button>
-                    <button class="secondary-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="16" x2="12" y2="12"></line>
-                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                        </svg>
-                        En savoir plus
-                    </button>
-                </div>
-                
-                <div class="hero-stats">
-                    <div class="stat-item">
-                        <span class="stat-number">50K+</span>
-                        <span class="stat-label">Voyageurs satisfaits</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">200+</span>
-                        <span class="stat-label">Destinations uniques</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">24/7</span>
-                        <span class="stat-label">Support premium</span>
-                    </div>
-                </div>
-            </div>
+  <div class="hero-content">
+    <div class="hero-text">
+      <h1 class="hero-title">
+        Explorez le Monde avec <span class="accent-text">TravelEase</span>
+      </h1>
+      <p class="hero-subtitle">
+        Découvrez des destinations extraordinaires avec notre plateforme
+        tout-en-un. Des vols aux hôtels, des activités aux expériences locales,
+        nous simplifions chaque étape de votre voyage pour que vous puissiez
+        vous concentrer sur l'essentiel : créer des souvenirs inoubliables.
+      </p>
+      <div class="hero-actions">
+        <button class="cta-button" onclick="window.location.href='/login'">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <polygon points="10 8 16 12 10 16 10 8"></polygon>
+          </svg>
+          Commencer l'aventure
+        </button>
+        <button class="secondary-button" onclick="scrollToSection('features')">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          En savoir plus
+        </button>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-number">50K+</span>
+          <span class="stat-label">Voyageurs satisfaits</span>
         </div>
-    </section>
+        <div class="stat-item">
+          <span class="stat-number">200+</span>
+          <span class="stat-label">Destinations uniques</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">24/7</span>
+          <span class="stat-label">Support premium</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    
-
-
-<!-- Features Section -->
 <section id="features" class="features-section" [@staggerCards]>
   <div class="section-container">
     <div class="section-header">
@@ -104,12 +131,14 @@
         Découvrez tout ce dont vous avez besoin pour un voyage parfait
       </p>
     </div>
-    
+
     <div class="features-grid">
       <mat-card class="feature-card" *ngFor="let feature of features">
         <mat-card-header>
           <div mat-card-avatar>
-            <mat-icon [color]="feature.color" class="feature-icon">{{ feature.icon }}</mat-icon>
+            <mat-icon [color]="feature.color" class="feature-icon">{{
+              feature.icon
+            }}</mat-icon>
           </div>
           <mat-card-title>{{ feature.title }}</mat-card-title>
         </mat-card-header>
@@ -124,7 +153,6 @@
   </div>
 </section>
 
-<!-- Benefits Section -->
 <section class="benefits-section">
   <div class="section-container">
     <div class="benefits-content">
@@ -161,7 +189,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="benefits-visual">
         <mat-card class="stats-card">
           <mat-card-content>
@@ -184,7 +212,6 @@
   </div>
 </section>
 
-<!-- Testimonials Section -->
 <section id="testimonials" class="testimonials-section">
   <div class="section-container">
     <div class="section-header">
@@ -193,9 +220,12 @@
         Découvrez les expériences de ceux qui nous font confiance
       </p>
     </div>
-    
+
     <div class="testimonials-grid">
-      <mat-card class="testimonial-card" *ngFor="let testimonial of testimonials">
+      <mat-card
+        class="testimonial-card"
+        *ngFor="let testimonial of testimonials"
+      >
         <mat-card-header>
           <div mat-card-avatar class="testimonial-avatar">
             {{ testimonial.avatar }}
@@ -203,8 +233,11 @@
           <mat-card-title>{{ testimonial.name }}</mat-card-title>
           <mat-card-subtitle>
             <div class="rating">
-              <mat-icon *ngFor="let star of getRatingStars(testimonial.rating)" 
-                        class="star-icon">star</mat-icon>
+              <mat-icon
+                *ngFor="let star of getRatingStars(testimonial.rating)"
+                class="star-icon"
+                >star</mat-icon
+              >
             </div>
           </mat-card-subtitle>
         </mat-card-header>
@@ -216,9 +249,6 @@
   </div>
 </section>
 
-
-
-<!-- Footer -->
 <footer id="contact" class="footer-section">
   <div class="section-container">
     <div class="footer-content">
@@ -229,7 +259,7 @@
         </div>
         <p>Votre partenaire de voyage de confiance depuis 2020</p>
       </div>
-      
+
       <div class="footer-links">
         <div class="link-group">
           <h4>Services</h4>
@@ -261,11 +291,24 @@
         </div>
       </div>
     </div>
-    
+
     <mat-divider></mat-divider>
-    
+
     <div class="footer-bottom">
       <p>&copy; 2025 TravelEase. Tous droits réservés.</p>
     </div>
   </div>
 </footer>
+
+<script>
+  function scrollToSection(sectionId) {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+
+  function redirectToLogin() {
+    window.location.href = "/login";
+  }
+</script>
