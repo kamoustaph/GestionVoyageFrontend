@@ -1,0 +1,19 @@
+<div class="breadcrumb-container">
+  <ol class="breadcrumb">
+    <li *ngFor="let item of breadcrumbs; let last = last; let i = index"
+         class="breadcrumb-item"
+         [class.active]="last">
+         
+      <a *ngIf="!last || i === 0" [routerLink]="item.url">
+        <i *ngIf="item.icon" class="material-icons">{{item.icon}}</i>
+        {{ item.label }}
+      </a>
+      
+      <span *ngIf="last && i !== 0">
+        {{ item.label }}
+      </span>
+      
+      <span *ngIf="!last" class="separator">/</span>
+    </li>
+  </ol>
+</div>

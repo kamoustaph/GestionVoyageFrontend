@@ -14,6 +14,8 @@ import { finalize } from 'rxjs/operators';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { Breadcrumb } from '../../../../core/services/breadcrumb';
+import { BreadcrumbVoyageComponent } from "../../breadcrumb/breadcrumb-voyage/breadcrumb-voyage";
 // Services à implémenter plus tard
 // import { VoyageService } from '../../../../core/services/voyage';
 // import { TicketService } from '../../../../core/services/ticket';
@@ -29,7 +31,8 @@ import { MatCardModule } from '@angular/material/card';
     MatProgressSpinnerModule,
     MatButtonModule,
     MatCardModule,
-  ],
+    BreadcrumbVoyageComponent
+],
   templateUrl: './dashboard-voyage.html',
   styleUrls: ['./dashboard-voyage.css'],
   animations: [
@@ -119,7 +122,7 @@ export class DashboardVoyage implements OnInit {
   hoverStates: string[] = Array(this.cards.length).fill('normal');
   isLoading = true;
 
-  constructor() {
+  constructor(private breadcrumbService: Breadcrumb) {
     // Services à injecter plus tard :
     // private voyageService: VoyageService,
     // private ticketService: TicketService,
@@ -128,6 +131,7 @@ export class DashboardVoyage implements OnInit {
   }
 
   ngOnInit() {
+    this.breadcrumbService.setBreadcrumbs([{ label: '', url: '/' }]);
     this.loadInitialData();
   }
 
