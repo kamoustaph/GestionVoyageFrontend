@@ -13,8 +13,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { trigger, transition, style, animate } from '@angular/animations';
 import Swal from 'sweetalert2';
 import { Role, RoleType } from '../../../core/models/role.model'; 
-import { AuthService } from '../../../core/services/auth';
 import { UserRegistration } from '../../../core/models/user.model';
+import { Auth } from '../../../core/services/auth';
 
 
 @Component({
@@ -48,7 +48,7 @@ import { UserRegistration } from '../../../core/models/user.model';
 })
 export class Register implements OnInit {
   private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
+  private authService = inject(Auth);
   private router = inject(Router);
 
   roles: Role[] = [];

@@ -11,7 +11,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserCredentials } from '../../../core/models/user.model';
-import { AuthService } from '../../../core/services/auth';
+import { Auth } from '../../../core/services/auth';
 
 @Component({
   selector: 'app-login',
@@ -33,7 +33,7 @@ import { AuthService } from '../../../core/services/auth';
 })
 export class Login {
   private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
+  private authService = inject(Auth);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
 

@@ -23,7 +23,7 @@ export interface GoogleOAuthResponse {
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class Auth {
   private http = inject(HttpClient);
   private router = inject(Router);
 

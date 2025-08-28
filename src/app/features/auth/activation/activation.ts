@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AuthService } from '../../../core/services/auth';
+import { Auth } from '../../../core/services/auth';
 
 @Component({
   selector: 'app-activation',
@@ -30,7 +30,7 @@ import { AuthService } from '../../../core/services/auth';
 })
 export class Activation {
   private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
+  private authService = inject(Auth);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private snackBar = inject(MatSnackBar);

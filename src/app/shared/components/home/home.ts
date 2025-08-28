@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -10,7 +10,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatChipsModule } from '@angular/material/chips';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 import { Subject, takeUntil } from 'rxjs';
-import { AuthService } from '../../../core/services/auth';
+import { Auth } from '../../../core/services/auth';
 
 @Component({
   selector: 'app-home',
@@ -65,12 +65,13 @@ import { AuthService } from '../../../core/services/auth';
   ]
 })
 export class Home implements OnInit, OnDestroy {
-  private authService = inject(AuthService);
+  private authService = inject(Auth);
   private router = inject(Router);
   private destroy$ = new Subject<void>();
 
   isAuthenticated = false;
   userInfo: any = null;
+  isMobileMenuOpen = false;
 
   features = [
     {
@@ -113,19 +114,19 @@ export class Home implements OnInit, OnDestroy {
 
   testimonials = [
     {
-      name: 'Marie Dubois',
+      name: 'Ameth Faye',
       rating: 5,
       comment: 'Service exceptionnel ! J\'ai organisé mon voyage de rêve en quelques clics.',
       avatar: 'M'
     },
     {
-      name: 'Jean Martin',
+      name: 'Samba Sarr',
       rating: 5,
       comment: 'Interface intuitive et prix compétitifs. Je recommande vivement !',
       avatar: 'J'
     },
     {
-      name: 'Sophie Lambert',
+      name: 'Mor Thiane',
       rating: 5,
       comment: 'Support client réactif et professionnel. Voyage parfaitement organisé.',
       avatar: 'S'
@@ -133,19 +134,59 @@ export class Home implements OnInit, OnDestroy {
   ];
 
   ngOnInit() {
-   this.authService.currentUser$
-  .pipe(takeUntil(this.destroy$))
-  .subscribe(user => {
-    this.isAuthenticated = !!user;
-    if (user) {
-      this.userInfo = user;
-    }
-  });
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        this.isAuthenticated = !!user;
+        if (user) {
+          this.userInfo = user;
+        }
+      });
   }
 
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  closeMobileMenu() {
+    this.isMobileMenuOpen = false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    
+    if (this.isMobileMenuOpen && 
+        !menuToggle?.contains(event.target as Node) && 
+        !mobileMenu?.contains(event.target as Node)) {
+      this.closeMobileMenu();
+    }
+  }
+
+  scrollToSectionAndClose(sectionId: string) {
+    this.scrollToSection(sectionId);
+    this.closeMobileMenu();
+  }
+
+  onLoginAndClose() {
+    this.onLogin();
+    this.closeMobileMenu();
+  }
+
+  onRegisterAndClose() {
+    this.onRegister();
+    this.closeMobileMenu();
+  }
+
+  onLogoutAndClose() {
+    this.onLogout();
+    this.closeMobileMenu();
   }
 
   onLogin() {
@@ -156,7 +197,7 @@ export class Home implements OnInit, OnDestroy {
     this.router.navigate(['/register']);
   }
 
- onLogout() {
+  onLogout() {
     try {
       this.authService.logout();
       this.router.navigate(['/home']);

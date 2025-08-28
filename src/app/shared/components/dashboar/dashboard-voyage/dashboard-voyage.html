@@ -1,0 +1,47 @@
+<div class="dashboard-container">
+  <div class="dashboard-content" @cardAnimation>
+    <h2>Tableau de Bord - Voyages</h2>
+    
+    <div class="cards-container">
+      <div
+        *ngFor="let card of cards; let i = index"
+        class="dashboard-card"
+        [@hoverAnimation]="hoverStates[i]"
+        [@pulseAnimation]="hoverStates[i]"
+        (mouseenter)="setHoverState(i, 'hover')"
+        (mouseleave)="setHoverState(i, 'normal')"
+      >
+        <div
+          class="card-icon"
+          [style.background-color]="card.color"
+          @pulseAnimation
+        >
+          <mat-icon>{{ card.icon }}</mat-icon>
+        </div>
+
+        <div class="card-content">
+          <h3>{{ card.title }}</h3>
+          <div class="count-container">
+            <ng-container *ngIf="!card.loading; else loadingTemplate">
+              <p class="count">{{ card.count | number }}</p>
+            </ng-container>
+            <ng-template #loadingTemplate>
+              <mat-spinner diameter="24" strokeWidth="3"></mat-spinner>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions-section">
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="refreshData()"
+        [disabled]="isLoading">
+        <mat-icon>refresh</mat-icon>
+        Actualiser les données
+      </button>
+    </div>
+  </div>
+</div>
