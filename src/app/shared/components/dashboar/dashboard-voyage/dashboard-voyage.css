@@ -1,9 +1,9 @@
 .dashboard-container {
-  padding: 5rem;
+  padding: 3rem;
   background-color: #f5f7fa;
   min-height: 100vh;
   box-sizing: border-box;
-  margin-left: 20px; 
+  margin-left: 28px; 
   width: calc(100% - 100px); 
 }
 

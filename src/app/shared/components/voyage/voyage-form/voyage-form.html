@@ -1,0 +1,109 @@
+<h2 mat-dialog-title>
+  {{ isEditMode ? 'Modifier un voyage' : 'Créer un nouveau voyage' }}
+</h2>
+
+<mat-dialog-content>
+  <app-breadcrumb-voyage></app-breadcrumb-voyage>
+
+  <form [formGroup]="voyageForm">
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Lieu de départ</mat-label>
+        <input matInput formControlName="lieuDepart" required>
+        <mat-error *ngIf="voyageForm.get('lieuDepart')?.invalid">
+          {{ getErrorMessage('lieuDepart') }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Lieu d'arrivée</mat-label>
+        <input matInput formControlName="lieuArrivee" required>
+        <mat-error *ngIf="voyageForm.get('lieuArrivee')?.invalid">
+          {{ getErrorMessage('lieuArrivee') }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Date de départ</mat-label>
+        <input matInput [matDatepicker]="pickerDepart" formControlName="dateDepart" required>
+        <mat-datepicker-toggle matSuffix [for]="pickerDepart"></mat-datepicker-toggle>
+        <mat-datepicker #pickerDepart></mat-datepicker>
+        <mat-error *ngIf="voyageForm.get('dateDepart')?.invalid">
+          {{ getErrorMessage('dateDepart') }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Date de retour</mat-label>
+        <input matInput [matDatepicker]="pickerRetour" formControlName="dateRetour" required>
+        <mat-datepicker-toggle matSuffix [for]="pickerRetour"></mat-datepicker-toggle>
+        <mat-datepicker #pickerRetour></mat-datepicker>
+        <mat-error *ngIf="voyageForm.get('dateRetour')?.invalid">
+          {{ getErrorMessage('dateRetour') }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Prix</mat-label>
+        <input matInput type="number" formControlName="prix" required>
+        <span matPrefix>FCFA&nbsp;</span>
+        <mat-error *ngIf="voyageForm.get('prix')?.invalid">
+          {{ getErrorMessage('prix') }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Statut</mat-label>
+        <mat-select formControlName="statut" required>
+          <mat-option *ngFor="let statut of statutOptions" [value]="statut">
+            {{ statut }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="voyageForm.get('statut')?.invalid">
+          {{ getErrorMessage('statut') }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Places disponibles</mat-label>
+        <input matInput type="number" formControlName="placesDisponibles" required>
+        <mat-error *ngIf="voyageForm.get('placesDisponibles')?.invalid">
+          {{ getErrorMessage('placesDisponibles') }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Places totales</mat-label>
+        <input matInput type="number" formControlName="placesTotal" required>
+        <mat-error *ngIf="voyageForm.get('placesTotal')?.invalid">
+          {{ getErrorMessage('placesTotal') }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="getFormError()" class="form-error">
+      <mat-error>{{ getFormError() }}</mat-error>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Annuler</button>
+  <button 
+    mat-raised-button 
+    color="primary" 
+    (click)="onSubmit()"
+    [disabled]="voyageForm.invalid || isLoading"
+  >
+    {{ isEditMode ? 'Modifier' : 'Créer' }}
+    <mat-icon *ngIf="isLoading">
+      <mat-spinner diameter="20"></mat-spinner>
+    </mat-icon>
+  </button>
+</mat-dialog-actions>

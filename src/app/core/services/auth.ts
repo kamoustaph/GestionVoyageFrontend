@@ -45,7 +45,7 @@ export class Auth {
    * Initie le processus d'authentification Google OAuth2
    */
   loginWithGoogle(): void {
-    window.location.href = `${environment.apiUrl}/oauth2/authorization/google`;
+  window.location.href = 'http://localhost:8093/oauth2/authorization/google';
   }
 
   /**

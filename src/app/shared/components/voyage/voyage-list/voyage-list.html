@@ -1,0 +1,142 @@
+<mat-card class="voyage-card">
+  <app-breadcrumb-voyage></app-breadcrumb-voyage>
+  <mat-card-header class="card-header">
+    <mat-card-title class="card-title">Gestion des Voyages</mat-card-title>
+    
+    <button *ngIf="isAdmin" mat-raised-button color="primary" (click)="openCreateDialog()" class="new-voyage-btn">
+      <mat-icon>add</mat-icon> Nouveau Voyage
+    </button>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="search-container">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Lieu de départ</mat-label>
+        <input matInput [(ngModel)]="searchCriteria.lieuDepart" (keyup.enter)="onSearch()" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Lieu d'arrivée</mat-label>
+        <input matInput [(ngModel)]="searchCriteria.lieuArrivee" (keyup.enter)="onSearch()" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Statut</mat-label>
+        <mat-select [(ngModel)]="searchCriteria.statut">
+          <mat-option value="">Tous</mat-option>
+          <mat-option *ngFor="let statut of statutOptions" [value]="statut">
+            {{ statut }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Prix min</mat-label>
+        <input matInput type="number" [(ngModel)]="searchCriteria.prixMin" (keyup.enter)="onSearch()" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Prix max</mat-label>
+        <input matInput type="number" [(ngModel)]="searchCriteria.prixMax" (keyup.enter)="onSearch()" />
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" (click)="onSearch()" [disabled]="isLoading">
+        <mat-icon>search</mat-icon> Rechercher
+      </button>
+      <button mat-button (click)="clearSearch()" *ngIf="isSearchActive()" [disabled]="isLoading">
+        <mat-icon>clear</mat-icon> Effacer
+      </button>
+    </div>
+
+    <div class="table-container mat-elevation-z8" *ngIf="!isLoading; else loading">
+      <table mat-table [dataSource]="dataSource">
+
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>ID</th>
+          <td mat-cell *matCellDef="let voyage">{{ voyage.id }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="lieuDepart">
+          <th mat-header-cell *matHeaderCellDef>Départ</th>
+          <td mat-cell *matCellDef="let voyage">{{ voyage.lieuDepart }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="lieuArrivee">
+          <th mat-header-cell *matHeaderCellDef>Arrivée</th>
+          <td mat-cell *matCellDef="let voyage">{{ voyage.lieuArrivee }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="dateDepart">
+          <th mat-header-cell *matHeaderCellDef>Date Départ</th>
+          <td mat-cell *matCellDef="let voyage">{{ formatDate(voyage.dateDepart) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="dateRetour">
+          <th mat-header-cell *matHeaderCellDef>Date Retour</th>
+          <td mat-cell *matCellDef="let voyage">{{ formatDate(voyage.dateRetour) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="prix">
+          <th mat-header-cell *matHeaderCellDef>Prix</th>
+          <td mat-cell *matCellDef="let voyage">{{ formatPrice(voyage.prix) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="placesDisponibles">
+          <th mat-header-cell *matHeaderCellDef>Places Disp.</th>
+          <td mat-cell *matCellDef="let voyage">{{ voyage.placesDisponibles }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="placesTotal">
+          <th mat-header-cell *matHeaderCellDef>Places Total</th>
+          <td mat-cell *matCellDef="let voyage">{{ voyage.placesTotal }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="statut">
+          <th mat-header-cell *matHeaderCellDef>Statut</th>
+          <td mat-cell *matCellDef="let voyage">
+            <span [class]="'statut-badge statut-' + voyage.statut?.toLowerCase()">
+              {{ voyage.statut }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container *ngIf="isAdmin" matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let voyage" class="actions-cell">
+            <button mat-icon-button color="primary" (click)="openEditDialog(voyage)" matTooltip="Modifier">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteVoyage(voyage.id!)" matTooltip="Supprimer">
+              <mat-icon>delete</mat-icon>
+            </button>
+            <mat-form-field appearance="outline" class="statut-select">
+              <mat-label>Statut</mat-label>
+              <mat-select [value]="voyage.statut" (selectionChange)="changeStatut(voyage, $event.value)">
+                <mat-option *ngFor="let statut of statutOptions" [value]="statut">
+                  {{ statut }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <mat-paginator [length]="totalElements"
+                     [pageSize]="pageSize"
+                     [pageSizeOptions]="[5, 10, 25, 100]"
+                     (page)="onPageChange($event)"
+                     showFirstLastButtons>
+      </mat-paginator>
+    </div>
+
+    <ng-template #loading>
+      <div class="loading-container">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Chargement en cours...</p>
+      </div>
+    </ng-template>
+  </mat-card-content>
+</mat-card>
