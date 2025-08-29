@@ -77,7 +77,7 @@ export class VoyageForm implements OnInit {
   voyageForm: FormGroup;
   isEditMode = false;
   isLoading = false;
-  statutOptions = ['ACTIF', 'PLANIFIE', 'TERMINE', 'ANNULE'];
+  statutOptions = ['ACTIF', 'COMPLET', 'TERMINE', 'ANNULE'];
 
   constructor(
     private fb: FormBuilder,

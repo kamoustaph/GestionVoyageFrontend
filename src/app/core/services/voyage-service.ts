@@ -18,6 +18,15 @@ export class VoyageService {
     return this.http.get<Page<Voyage>>(this.apiUrl, { params });
   }
 
+  searchGlobal(query: string, page: number = 0, size: number = 10): Observable<Page<Voyage>> {
+  const params = new HttpParams()
+    .set('query', query)
+    .set('page', page.toString())
+    .set('size', size.toString());
+  
+  return this.http.get<Page<Voyage>>(`${this.apiUrl}/search/global`, { params });
+}
+
   searchByLieuDepart(lieuDepart: string, page: number = 0, size: number = 5): Observable<Page<Voyage>> {
     const params = new HttpParams()
       .set('lieuDepart', lieuDepart)

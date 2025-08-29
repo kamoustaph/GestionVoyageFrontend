@@ -1,6 +1,6 @@
 .breadcrumb-container {
   width: 100%;
-  background-color: #1976d2;
+  background-color: #edf2f7ff;
   padding: 1rem 2rem;
   height: 56px;
   margin: 3rem -2rem 1rem -2rem;
@@ -23,7 +23,7 @@
 }
 
 .breadcrumb-item a {
-  color: #f0f6fcff;
+  color: #1976d2;
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -33,17 +33,17 @@
 }
 
 .breadcrumb-item.active span {
-  color: rgba(239, 244, 248, 1);
+  color: #1976d2;
   font-weight: 600;
 }
 
 .breadcrumb-item i {
-  color: #f0f5fbff;
+  color: #1976d2;
   font-size: 1rem;
 }
 
 .separator {
   margin: 0 0.5rem;
-  color: rgba(228, 234, 239, 1);
+  color: #1976d2;
   font-weight: bold;
 }
