@@ -1,0 +1,75 @@
+<h2 mat-dialog-title>
+  {{ isEditMode ? 'Modifier un ticket' : 'Créer un nouveau ticket' }}
+</h2>
+
+<mat-dialog-content>
+  <app-breadcrumb-voyage></app-breadcrumb-voyage>
+
+  <form [formGroup]="ticketForm">
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>ID de la réservation</mat-label>
+        <input matInput type="number" formControlName="reservationId" required [readonly]="isEditMode">
+        <mat-error *ngIf="ticketForm.get('reservationId')?.invalid">
+          {{ getErrorMessage('reservationId') }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Code QR</mat-label>
+        <input matInput formControlName="qrCode" required [readonly]="isEditMode">
+        <button mat-icon-button matSuffix (click)="generateQrCode()" *ngIf="!isEditMode" type="button">
+          <mat-icon>autorenew</mat-icon>
+        </button>
+        <mat-error *ngIf="ticketForm.get('qrCode')?.invalid">
+          {{ getErrorMessage('qrCode') }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Statut</mat-label>
+        <mat-select formControlName="statut" required>
+          <mat-option *ngFor="let statut of statutOptions" [value]="statut">
+            {{ statut }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="ticketForm.get('statut')?.invalid">
+          {{ getErrorMessage('statut') }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-info" *ngIf="isEditMode">
+      <p class="info-text">
+        <mat-icon>info</mat-icon>
+        En mode édition, seuls le statut peut être modifié. L'ID de réservation et le code QR sont verrouillés.
+      </p>
+    </div>
+
+    <div class="form-info" *ngIf="!isEditMode">
+      <p class="info-text">
+        <mat-icon>info</mat-icon>
+        Le code QR sera généré automatiquement. Cliquez sur l'icône de régénération pour créer un nouveau code.
+      </p>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Annuler</button>
+  <button 
+    mat-raised-button 
+    color="primary" 
+    (click)="onSubmit()"
+    [disabled]="ticketForm.invalid || isLoading"
+  >
+    {{ isEditMode ? 'Modifier' : 'Créer' }}
+    <mat-icon *ngIf="isLoading">
+      <mat-spinner diameter="20"></mat-spinner>
+    </mat-icon>
+  </button>
+</mat-dialog-actions>

@@ -5,6 +5,7 @@ import { Register } from './features/auth/register/register';
 import { DashboardVoyage } from './shared/components/dashboar/dashboard-voyage/dashboard-voyage';
 import { LayoutVoyage } from './shared/components/layout/layout-voyage/layout-voyage';
 import { VoyageList } from './shared/components/voyage/voyage-list/voyage-list';
+import { TicketList } from './shared/components/ticket/ticket-list/ticket-list';
 
 export const routes: Routes = [
   {
@@ -29,6 +30,10 @@ export const routes: Routes = [
       {
         path: 'voyage',
         component: VoyageList,
+      },
+       {
+        path: 'ticket',
+        component: TicketList,
       },
     ],
   },
