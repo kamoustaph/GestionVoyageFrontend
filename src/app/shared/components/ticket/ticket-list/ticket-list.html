@@ -99,7 +99,7 @@
         <ng-container matColumnDef="createdAt">
           <th mat-header-cell *matHeaderCellDef>Créé le</th>
           <td mat-cell *matCellDef="let ticket">
-            {{ formatDate(ticket.createdAt || "") }}
+              {{ formatDate(ticket.createdAt) }}
           </td>
         </ng-container>
 

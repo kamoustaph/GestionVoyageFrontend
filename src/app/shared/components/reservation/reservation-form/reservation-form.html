@@ -1,0 +1,110 @@
+<h2 mat-dialog-title>
+  <mat-icon>event_available</mat-icon>
+  Nouvelle Réservation
+</h2>
+
+<mat-dialog-content>
+  <app-breadcrumb-voyage></app-breadcrumb-voyage>
+
+  <form [formGroup]="reservationForm" class="reservation-form">
+    <!-- Informations sur la réservation -->
+    <div class="form-section">
+      <h3 class="section-title">
+        <mat-icon>info</mat-icon>
+        Informations de la Réservation
+      </h3>
+      
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>ID de l'Utilisateur</mat-label>
+          <input matInput type="number" formControlName="userId" required>
+          <mat-icon matPrefix>person</mat-icon>
+          <mat-error *ngIf="reservationForm.get('userId')?.invalid">
+            {{ getErrorMessage('userId') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>ID du Voyage</mat-label>
+          <input matInput type="number" formControlName="voyageId" required>
+          <mat-icon matPrefix>flight</mat-icon>
+          <mat-error *ngIf="reservationForm.get('voyageId')?.invalid">
+            {{ getErrorMessage('voyageId') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nombre de Places</mat-label>
+          <input matInput type="number" formControlName="nombrePlaces" required min="1" max="10">
+          <mat-icon matPrefix>confirmation_number</mat-icon>
+          <mat-hint>Entre 1 et 10 places maximum</mat-hint>
+          <mat-error *ngIf="reservationForm.get('nombrePlaces')?.invalid">
+            {{ getErrorMessage('nombrePlaces') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Informations importantes -->
+    <div class="info-card">
+      <mat-icon class="info-icon">info</mat-icon>
+      <div class="info-content">
+        <h4>Informations importantes</h4>
+        <ul>
+          <li>✅ La réservation sera créée avec le statut "EN ATTENTE"</li>
+          <li>⏰ Date d'expiration automatique dans 24h</li>
+          <li>💰 Prix calculé automatiquement selon le voyage</li>
+          <li>🔒 Vérification automatique des places disponibles</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Résumé de la réservation -->
+    <div class="summary-card" *ngIf="reservationForm.valid">
+      <h4>
+        <mat-icon>receipt</mat-icon>
+        Récapitulatif
+      </h4>
+      <div class="summary-content">
+        <div class="summary-item">
+          <span class="label">Utilisateur ID:</span>
+          <span class="value">{{ reservationForm.get('userId')?.value }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="label">Voyage ID:</span>
+          <span class="value">{{ reservationForm.get('voyageId')?.value }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="label">Places:</span>
+          <span class="value">{{ reservationForm.get('nombrePlaces')?.value }}</span>
+        </div>
+        <div class="summary-item highlight">
+          <span class="label">Statut:</span>
+          <span class="value">EN ATTENTE</span>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-button (click)="onCancel()" class="cancel-btn">
+    <mat-icon>cancel</mat-icon>
+    Annuler
+  </button>
+  <button 
+    mat-raised-button 
+    color="primary" 
+    (click)="onSubmit()"
+    [disabled]="reservationForm.invalid || isLoading"
+    class="submit-btn"
+  >
+    <mat-icon *ngIf="!isLoading">check_circle</mat-icon>
+    <mat-icon *ngIf="isLoading">
+      <mat-spinner diameter="20"></mat-spinner>
+    </mat-icon>
+    {{ isLoading ? 'Création...' : 'Créer la Réservation' }}
+  </button>
+</mat-dialog-actions>

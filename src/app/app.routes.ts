@@ -6,6 +6,7 @@ import { DashboardVoyage } from './shared/components/dashboar/dashboard-voyage/d
 import { LayoutVoyage } from './shared/components/layout/layout-voyage/layout-voyage';
 import { VoyageList } from './shared/components/voyage/voyage-list/voyage-list';
 import { TicketList } from './shared/components/ticket/ticket-list/ticket-list';
+import { ReservationList } from './shared/components/reservation/reservation-list/reservation-list';
 
 export const routes: Routes = [
   {
@@ -34,6 +35,10 @@ export const routes: Routes = [
        {
         path: 'ticket',
         component: TicketList,
+      },
+      {
+        path: 'reservation',
+        component: ReservationList,
       },
     ],
   },
