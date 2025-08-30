@@ -78,7 +78,6 @@ export class ReservationService {
     return this.http.get<any>(`${this.apiUrl}/search/global`, { params }).pipe(
       map(response => {
         const normalized = this.normalizePageResponse(response, page, size);
-        // Mapper chaque réservation
         if (normalized.content && Array.isArray(normalized.content)) {
           normalized.content = normalized.content.map(item => this.mapReservationData(item));
         }
