@@ -135,9 +135,6 @@ export class PaymentFormComponent implements OnInit {
       });
     }
   }
-
-  
-
   onSubmit(): void {
     if (this.paymentForm.invalid) {
       this.markFormGroupTouched();
