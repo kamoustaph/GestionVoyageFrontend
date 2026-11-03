@@ -1,5 +1,13 @@
 # Sert l'application Angular et relaie /api vers le backend Spring.
-# API_UPSTREAM est fourni par l'environnement (ex. http://api:8093 ou l'adresse interne de l'ALB).
+# API_UPSTREAM est fourni par l'environnement (ex. http://api:8093).
+
+# Derrière l'ALB, le protocole d'origine (http ou https) arrive dans X-Forwarded-Proto.
+# On le transmet tel quel au backend ; sans ALB (docker compose local), on utilise $scheme.
+map $http_x_forwarded_proto $proto_origine {
+    default $http_x_forwarded_proto;
+    ""      $scheme;
+}
+
 server {
     listen 80;
     server_name _;
@@ -13,7 +21,7 @@ server {
         proxy_pass ${API_UPSTREAM};
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Proto $proto_origine;
     }
 
     # Fichiers avec empreinte : cache long.
