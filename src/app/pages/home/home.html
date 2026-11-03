@@ -1,0 +1,90 @@
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="pitch">
+      <h1>Votre place dans le car, réservée avant d'aller à la gare.</h1>
+      <p class="lead">
+        Les lignes Dakar, Saint-Louis, Touba, Ziguinchor et 13 autres villes.
+        Payez par Wave ou Orange Money, recevez un billet QR, montrez-le au contrôleur.
+      </p>
+      <div class="search-box">
+        <app-search-form class="bloc" />
+      </div>
+    </div>
+
+    <aside class="board" aria-labelledby="board-title">
+      <div class="board-head">
+        <h2 id="board-title">Prochains départs</h2>
+        <span class="clock num" aria-label="Heure actuelle">{{ heure() | date: 'HH:mm:ss' }}</span>
+      </div>
+      <div class="board-cols" aria-hidden="true">
+        <span>Heure</span><span>Destination</span><span class="r">Statut</span>
+      </div>
+
+      @if (chargement()) {
+        <div class="board-empty"><div class="spinner"></div></div>
+      } @else if (horsLigne()) {
+        <div class="board-empty">Tableau indisponible : le serveur ne répond pas.</div>
+      } @else if (departs().length === 0) {
+        <div class="board-empty">Aucun départ programmé pour le moment.</div>
+      } @else {
+        <ol class="board-rows">
+          @for (v of departs(); track v.id) {
+            @let s = statut(v);
+            <li>
+              <a [routerLink]="['/voyages', v.id, 'reserver']" [attr.aria-label]="'Réserver ' + v.villeDepart + ' vers ' + v.villeArrivee + ' à ' + (v.dateDepart | date: 'HH:mm')">
+                <span class="t num">{{ v.dateDepart | date: 'HH:mm' }}</span>
+                <span class="dest">
+                  <span class="codes">{{ v.villeDepart | codeVille }} <i aria-hidden="true">›</i> {{ v.villeArrivee | codeVille }}</span>
+                  <span class="cities">{{ v.villeArrivee }} · {{ v.dateDepart | date: 'EEE d' }} · {{ v.prix | fcfa: true }}</span>
+                </span>
+                <span class="st {{ s.classe }}">{{ s.texte }}</span>
+              </a>
+            </li>
+          }
+        </ol>
+      }
+      <a routerLink="/voyages" class="board-all">Tous les départs</a>
+    </aside>
+  </div>
+</section>
+
+<section class="wrap lines" aria-labelledby="lines-title">
+  <div class="section-head">
+    <h2 id="lines-title">Les lignes les plus prises</h2>
+    <p class="muted">Départs tous les jours depuis la gare des Baux maraîchers.</p>
+  </div>
+  <ul class="line-list">
+    @for (l of lignes; track l.a) {
+      <li>
+        <a [routerLink]="['/voyages']" [queryParams]="{ depart: l.de, arrivee: l.a }">
+          <span class="lc">{{ l.de | codeVille }}</span>
+          <span class="lmid">
+            <strong>{{ l.de }} – {{ l.a }}</strong>
+            <span class="muted">environ {{ l.duree | duree }}</span>
+          </span>
+          <span class="lc">{{ l.a | codeVille }}</span>
+        </a>
+      </li>
+    }
+  </ul>
+</section>
+
+<section class="how" aria-labelledby="how-title">
+  <div class="wrap">
+    <h2 id="how-title">Du téléphone au siège</h2>
+    <ol class="steps">
+      <li>
+        <h3>Choisissez votre départ</h3>
+        <p>Heure, classe et places restantes sont à jour. Réservez jusqu'à 6 places, au nom de chaque passager.</p>
+      </li>
+      <li>
+        <h3>Payez sur mobile</h3>
+        <p>Wave, Orange Money, Free Money ou carte. Les places sont bloquées 15 minutes, le temps de valider.</p>
+      </li>
+      <li>
+        <h3>Montrez votre QR code</h3>
+        <p>À l'embarquement, le contrôleur scanne le billet. Un billet scanné ne peut pas resservir.</p>
+      </li>
+    </ol>
+  </div>
+</section>

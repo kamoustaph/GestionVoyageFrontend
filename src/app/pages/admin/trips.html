@@ -1,0 +1,107 @@
+<div class="page-head">
+  <div><h1>Départs</h1><p>Programmez les cars, ajustez la capacité, ouvrez l'embarquement ou annulez.</p></div>
+  <button type="button" class="btn btn-primary" (click)="nouveau(dlg)">Programmer un départ</button>
+</div>
+@if (erreur()) { <div class="alert">{{ erreur() }}</div> }
+
+<div class="filters">
+  <label class="field">
+    <span>Afficher</span>
+    <select class="input" [ngModel]="filtreStatut()" (ngModelChange)="filtreStatut.set($event)">
+      <option value="AVENIR">À venir</option>
+      <option value="EMBARQUEMENT">En embarquement</option>
+      <option value="PARTI">Partis</option>
+      <option value="ANNULE">Annulés</option>
+      <option value="TOUS">Tous</option>
+    </select>
+  </label>
+  <label class="field">
+    <span>Ville</span>
+    <select class="input" [ngModel]="filtreVille()" (ngModelChange)="filtreVille.set($event)">
+      <option value="">Toutes</option>
+      @for (v of villes(); track v) { <option [value]="v">{{ v }}</option> }
+    </select>
+  </label>
+</div>
+<p class="count">{{ visibles().length }} départ(s)</p>
+
+<div class="table-wrap">
+  <table class="data">
+    <thead>
+      <tr><th>Départ</th><th>Trajet</th><th>Classe</th><th class="right">Prix</th><th>Remplissage</th><th>Car</th><th>Statut</th><th></th></tr>
+    </thead>
+    <tbody>
+      @for (v of visibles().slice(0, 150); track v.id) {
+        <tr>
+          <td class="num">{{ v.dateDepart | date: 'EEE d MMM, HH:mm' }}</td>
+          <td><strong>{{ v.villeDepart | codeVille }} › {{ v.villeArrivee | codeVille }}</strong> <span class="muted">{{ v.villeDepart }} – {{ v.villeArrivee }}</span></td>
+          <td>{{ v.classe | libelle }}</td>
+          <td class="right num">{{ v.prix | fcfa: true }}</td>
+          <td>
+            <div class="bar-cell">
+              <span class="mini"><span [style.width.%]="100 * (v.placesTotal - v.placesDisponibles) / v.placesTotal"></span></span>
+              <span class="num">{{ v.placesTotal - v.placesDisponibles }}/{{ v.placesTotal }}</span>
+            </div>
+          </td>
+          <td>{{ v.bus || '-' }}</td>
+          <td><span class="tag {{ v.statut | ton }}">{{ v.statut | libelle }}</span></td>
+          <td>
+            <div class="acts">
+              @if (v.statut === 'PROGRAMME' || v.statut === 'EMBARQUEMENT') {
+                <button type="button" class="btn btn-ghost btn-sm" (click)="modifier(v, dlg)">Modifier</button>
+              }
+              @if (v.statut === 'PROGRAMME') {
+                <button type="button" class="btn btn-ghost btn-sm" (click)="statut(v, 'EMBARQUEMENT')">Ouvrir l'embarquement</button>
+              }
+              @if (v.statut === 'EMBARQUEMENT') {
+                <button type="button" class="btn btn-ghost btn-sm" (click)="statut(v, 'PARTI')">Marquer parti</button>
+              }
+              @if (v.statut === 'PROGRAMME' || v.statut === 'EMBARQUEMENT') {
+                <button type="button" class="btn btn-danger btn-sm" (click)="statut(v, 'ANNULE')">Annuler</button>
+              }
+            </div>
+          </td>
+        </tr>
+      } @empty {
+        <tr><td colspan="8" class="empty">Aucun départ pour ces filtres.</td></tr>
+      }
+    </tbody>
+  </table>
+</div>
+@if (visibles().length > 150) { <p class="muted count">Les 150 premiers départs sont affichés. Filtrez par ville pour affiner.</p> }
+
+<dialog #dlg aria-labelledby="dlg-title">
+  <form class="dlg" (ngSubmit)="enregistrer(dlg)">
+    <h2 id="dlg-title">{{ edition() ? 'Modifier le départ' : 'Programmer un départ' }}</h2>
+    @if (erreurForm()) { <div class="alert" role="alert">{{ erreurForm() }}</div> }
+    <div class="form-grid two">
+      <label class="field"><span>Ville de départ</span>
+        <select class="input" name="vd" [(ngModel)]="form.villeDepart" required>
+          @for (v of villes(); track v) { <option [value]="v">{{ v }}</option> }
+        </select>
+      </label>
+      <label class="field"><span>Ville d'arrivée</span>
+        <select class="input" name="va" [(ngModel)]="form.villeArrivee" required>
+          @for (v of villes(); track v) { <option [value]="v">{{ v }}</option> }
+        </select>
+      </label>
+      <label class="field"><span>Gare de départ</span><input class="input" name="gd" [(ngModel)]="form.gareDepart" /></label>
+      <label class="field"><span>Gare d'arrivée</span><input class="input" name="ga" [(ngModel)]="form.gareArrivee" /></label>
+      <label class="field"><span>Date</span><input class="input" type="date" name="date" [(ngModel)]="form.date" required /></label>
+      <label class="field"><span>Heure</span><input class="input" type="time" name="heure" [(ngModel)]="form.heure" required /></label>
+      <label class="field"><span>Durée (minutes)</span><input class="input" type="number" name="duree" [(ngModel)]="form.dureeMinutes" min="15" max="1440" required /></label>
+      <label class="field"><span>Prix par place (F CFA)</span><input class="input" type="number" name="prix" [(ngModel)]="form.prix" min="500" step="500" required /></label>
+      <label class="field"><span>Nombre de places</span><input class="input" type="number" name="places" [(ngModel)]="form.placesTotal" min="1" max="80" required /></label>
+      <label class="field"><span>Classe</span>
+        <select class="input" name="classe" [(ngModel)]="form.classe">
+          @for (c of classes; track c) { <option [value]="c">{{ c | libelle }}</option> }
+        </select>
+      </label>
+      <label class="field"><span>Immatriculation du car</span><input class="input" name="bus" [(ngModel)]="form.bus" placeholder="DK-4521-BB" /></label>
+    </div>
+    <div class="dlg-actions">
+      <button type="button" class="btn btn-ghost" (click)="dlg.close()">Fermer</button>
+      <button type="submit" class="btn btn-primary" [disabled]="envoi()">{{ edition() ? 'Enregistrer' : 'Programmer' }}</button>
+    </div>
+  </form>
+</dialog>

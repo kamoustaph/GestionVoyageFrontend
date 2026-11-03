@@ -1,0 +1,48 @@
+.hero { background: var(--surface); border-bottom: 1px solid var(--line); padding: 40px 0 48px; }
+.hero-grid { display: grid; gap: 32px; align-items: start; }
+@media (min-width: 1040px) { .hero-grid { grid-template-columns: 1.1fr 1fr; gap: 48px; padding-top: 16px; } }
+.pitch h1 { max-width: 15ch; margin-bottom: 18px; }
+.lead { font-size: 1.12rem; color: var(--muted); max-width: 52ch; }
+.search-box { margin-top: 28px; padding: 20px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--page); }
+
+/* Tableau des départs, à la manière des écrans de gare */
+.board { background: var(--board); color: #fff; border-radius: var(--r-lg); padding: 20px 20px 16px; }
+.board-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+.board-head h2 { font-size: 1.25rem; margin: 0; color: #fff; }
+.clock { font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; color: var(--sun); }
+.board-cols { display: grid; grid-template-columns: 64px 1fr auto; gap: 12px; font-size: .78rem; color: #9cc3ad; padding: 0 8px 8px; border-bottom: 1px solid var(--board-line); }
+.board-cols .r { text-align: right; }
+.board-rows { list-style: none; margin: 0; padding: 0; }
+.board-rows li { border-bottom: 1px solid var(--board-line); }
+.board-rows a { display: grid; grid-template-columns: 64px 1fr auto; gap: 12px; align-items: center; padding: 11px 8px; color: #fff; text-decoration: none; border-radius: 6px; }
+.board-rows a:hover { background: var(--board-line); }
+.t { font-family: var(--font-display); font-weight: 700; font-size: 1.35rem; color: var(--sun); }
+.dest { display: flex; flex-direction: column; min-width: 0; }
+.codes { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; letter-spacing: .04em; }
+.codes i { font-style: normal; color: #9cc3ad; }
+.cities { font-size: .82rem; color: #b9d6c6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-transform: capitalize; }
+.st { font-size: .85rem; font-weight: 700; color: #b9d6c6; text-align: right; white-space: nowrap; }
+.st.board-go { color: var(--ink); background: var(--sun); padding: 2px 8px; border-radius: 4px; }
+.st.board-few { color: var(--sun); }
+.st.board-full { color: #ff9aa5; }
+.board-empty { display: flex; justify-content: center; padding: 48px 16px; color: #b9d6c6; text-align: center; }
+.board-empty .spinner { border-color: var(--board-line); border-top-color: var(--sun); }
+.board-all { display: inline-block; margin-top: 14px; color: var(--sun); font-weight: 700; }
+
+.section-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 24px; margin-bottom: 20px; }
+.section-head h2, .section-head p { margin: 0; }
+.lines { padding-top: 56px; padding-bottom: 56px; }
+.line-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+@media (min-width: 680px) { .line-list { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1040px) { .line-list { grid-template-columns: 1fr 1fr 1fr; } }
+.line-list a { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; padding: 16px 18px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); color: var(--ink); text-decoration: none; }
+.line-list a:hover { border-color: var(--baobab); }
+.lc { font-family: var(--font-display); font-weight: 800; font-size: 1.3rem; letter-spacing: -.02em; color: var(--baobab); }
+.lmid { display: flex; flex-direction: column; text-align: center; font-size: .92rem; }
+
+.how { background: var(--surface); border-top: 1px solid var(--line); padding: 56px 0 64px; }
+.steps { list-style: none; counter-reset: step; margin: 24px 0 0; padding: 0; display: grid; gap: 24px; }
+@media (min-width: 860px) { .steps { grid-template-columns: repeat(3, 1fr); gap: 40px; } }
+.steps li { counter-increment: step; padding-top: 16px; border-top: 3px solid var(--ink); }
+.steps li::before { content: counter(step); display: block; font-family: var(--font-display); font-weight: 800; font-size: 2.4rem; line-height: 1; color: var(--baobab); margin-bottom: 10px; }
+.steps p { color: var(--muted); max-width: 40ch; }
