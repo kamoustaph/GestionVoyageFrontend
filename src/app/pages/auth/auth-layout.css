@@ -1,0 +1,15 @@
+.auth { display: grid; min-height: calc(100vh - 69px); }
+@media (min-width: 960px) { .auth { grid-template-columns: 1fr 1fr; } }
+.side { display: none; background: var(--board); color: #fff; padding: 56px; }
+@media (min-width: 960px) { .side { display: flex; flex-direction: column; justify-content: space-between; } }
+.side h2 { color: #fff; font-size: 2.2rem; max-width: 14ch; }
+.side p { color: #b9d6c6; max-width: 40ch; }
+.side .codes { font-family: var(--font-display); font-weight: 800; font-size: 4.5rem; letter-spacing: -.04em; line-height: .9; color: var(--sun); }
+.form-side { display: flex; align-items: center; justify-content: center; padding: 40px 16px; }
+.card { width: 100%; max-width: 420px; }
+.card h1 { font-size: 2rem; margin-bottom: 6px; }
+.card > p { color: var(--muted); margin-bottom: 24px; }
+.switch { margin-top: 20px; text-align: center; color: var(--muted); }
+.demo { margin-top: 28px; padding: 14px 16px; border: 1px dashed var(--line); border-radius: var(--r-md); font-size: .9rem; }
+.demo strong { display: block; margin-bottom: 6px; }
+.demo button { display: block; margin: 4px 0; text-align: left; }

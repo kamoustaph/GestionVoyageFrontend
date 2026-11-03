@@ -1,0 +1,112 @@
+<div class="desk">
+  <section class="left">
+    <div class="controls">
+      <label class="field">
+        <span>Départ contrôlé</span>
+        <select class="input" (change)="choisirDepart($any($event.target).value)">
+          <option value="">Tous les départs du jour</option>
+          @for (d of departs(); track d.id) {
+            <option [value]="d.id">{{ d.dateDepart | date: 'EEE HH:mm' }} · {{ d.villeDepart | codeVille }} › {{ d.villeArrivee | codeVille }} · {{ d.bus }}</option>
+          }
+        </select>
+        <small>En choisissant un car, un billet d'un autre départ sera refusé.</small>
+      </label>
+      <label class="toggle">
+        <input type="checkbox" [checked]="direct()" (change)="direct.set($any($event.target).checked)" />
+        <span><strong>Embarquement direct</strong> : un billet valide est enregistré dès le scan.</span>
+      </label>
+    </div>
+
+    <app-qr-scanner [pause]="phase() !== 'attente'" (lu)="controler($event)" />
+
+    <form class="manual" (ngSubmit)="saisir()">
+      <label class="field">
+        <span>Code imprimé sous le QR</span>
+        <div class="row">
+          <input class="input code" name="code" [(ngModel)]="saisie" maxlength="10" autocomplete="off"
+                 autocapitalize="characters" placeholder="Ex. 8HKT3QZP2W" />
+          <button class="btn btn-ghost" type="submit">Vérifier</button>
+        </div>
+      </label>
+      <label class="btn btn-ghost btn-sm photo">
+        Lire une photo de billet
+        <input type="file" accept="image/*" (change)="photo($event)" hidden />
+      </label>
+    </form>
+  </section>
+
+  <section class="right" aria-live="assertive">
+    <div class="counters">
+      <div><strong class="num">{{ compteur().embarques }}</strong><span>embarqués</span></div>
+      <div><strong class="num">{{ compteur().refus }}</strong><span>refusés</span></div>
+    </div>
+
+    @if (erreur()) { <div class="alert">{{ erreur() }}</div> }
+
+    @switch (phase()) {
+      @case ('attente') {
+        <div class="verdict idle">
+          <svg width="56" height="56" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <h2>Prêt à scanner</h2>
+          <p>Le voyageur présente le QR code de son billet devant la caméra.</p>
+        </div>
+      }
+      @case ('verification') {
+        <div class="verdict idle"><div class="spinner"></div><p>Vérification…</p></div>
+      }
+      @default {
+        @if (resultat(); as r) {
+          <div class="verdict" [class.ok]="r.accepte || phase() === 'embarque'" [class.ko]="!r.accepte && phase() !== 'embarque'">
+            <div class="band">
+              <svg width="44" height="44" viewBox="0 0 24 24" aria-hidden="true">
+                @if (r.accepte) {
+                  <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                } @else {
+                  <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+                }
+              </svg>
+              <div>
+                @if (phase() === 'embarque') {
+                  <h2>Embarqué</h2>
+                  <p>{{ r.message }}</p>
+                } @else {
+                  <h2>{{ r.message }}</h2>
+                }
+              </div>
+            </div>
+
+            @if (r.billet; as b) {
+              <div class="who">
+                <span>Passager</span>
+                <strong>{{ b.nomPassager }}</strong>
+              </div>
+              <dl class="facts">
+                <div><dt>Siège</dt><dd class="big num">{{ b.siege }}</dd></div>
+                <div><dt>Trajet</dt><dd>{{ b.voyage.villeDepart | codeVille }} › {{ b.voyage.villeArrivee | codeVille }}</dd></div>
+                <div><dt>Départ</dt><dd class="num">{{ b.voyage.dateDepart | date: 'EEE d, HH:mm' }}</dd></div>
+                <div><dt>Car</dt><dd>{{ b.voyage.bus || '-' }}</dd></div>
+                <div><dt>Classe</dt><dd>{{ b.voyage.classe | libelle }}</dd></div>
+                <div><dt>Billet</dt><dd class="num">{{ b.code }}</dd></div>
+              </dl>
+              @if (b.embarqueLe && r.resultat === 'DEJA_UTILISE') {
+                <p class="when">Déjà embarqué le {{ b.embarqueLe | date: 'd MMM à HH:mm:ss' }}</p>
+              }
+            }
+
+            <div class="actions">
+              @if (phase() === 'resultat' && r.accepte) {
+                <button type="button" class="btn btn-primary big-btn" (click)="confirmer()">Confirmer l'embarquement</button>
+                <button type="button" class="btn btn-ghost" (click)="suivant()">Refuser</button>
+              } @else {
+                <button type="button" class="btn btn-primary big-btn" (click)="suivant()">Scanner le suivant</button>
+              }
+            </div>
+            @if (phase() === 'resultat' && r.accepte) {
+              <p class="hint">Vérifiez la pièce d'identité avant de confirmer.</p>
+            }
+          </div>
+        }
+      }
+    }
+  </section>
+</div>

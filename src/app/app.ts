@@ -1,51 +1,22 @@
-import { Component, signal, OnInit, inject } from '@angular/core';
-import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { filter } from 'rxjs';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { Footer } from './layout/footer';
+import { Header } from './layout/header';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterOutlet,
-    MatProgressSpinnerModule
-  ],
+  imports: [RouterOutlet, Header, Footer],
   template: `
-    <div class="app-container">
-      <!-- Loading overlay -->
-      <div *ngIf="isLoading()" class="loading-overlay">
-        <mat-spinner diameter="50"></mat-spinner>
-        <p class="loading-text">Chargement...</p>
-      </div>
-
-      <!-- Router outlet pour les composants -->
-      <router-outlet></router-outlet>
-    </div>
+    <a class="skip" href="#contenu">Aller au contenu</a>
+    <app-header />
+    <main id="contenu"><router-outlet /></main>
+    <app-footer />
   `,
-  styleUrls: ['./app.css']
+  styles: `
+    :host { display: flex; flex-direction: column; min-height: 100vh; }
+    main { flex: 1; }
+    .skip { position: absolute; left: -999px; top: 8px; background: var(--sun); color: var(--ink); padding: 8px 12px; z-index: 10; font-weight: 700; }
+    .skip:focus { left: 8px; }
+  `,
 })
-export class App implements OnInit {
-  private router = inject(Router);
-  
-  protected readonly title = signal('TravelEase - Gestion de Voyage');
-  protected readonly isLoading = signal(true);
-
-  ngOnInit() {
-    // Écouter les changements de route pour gérer le loading
-    this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(() => {
-        // Masquer le loading après la navigation
-        setTimeout(() => {
-          this.isLoading.set(false);
-        }, 500);
-      });
-
-    // Initialiser le loading à false après un court délai
-    setTimeout(() => {
-      this.isLoading.set(false);
-    }, 1000);
-  }
-}
+export class App {}

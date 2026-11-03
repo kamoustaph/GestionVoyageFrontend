@@ -1,20 +1,19 @@
+import { registerLocaleData } from '@angular/common';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
-import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideRouter } from '@angular/router';
+import localeFr from '@angular/common/locales/fr';
+import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
 import { routes } from './app.routes';
-import { authInterceptor } from './core/interceptors/auth-interceptor';
+import { authInterceptor } from './core/auth.interceptor';
 
+registerLocaleData(localeFr);
 
 export const appConfig: ApplicationConfig = {
-   providers: [
+  providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
-    provideAnimations(),
-    provideHttpClient(
-      withFetch(),
-      withInterceptors([authInterceptor])
-    )
-  ]
+    provideRouter(routes, withComponentInputBinding(), withInMemoryScrolling({ scrollPositionRestoration: 'top' })),
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
+    { provide: LOCALE_ID, useValue: 'fr' },
+  ],
 };

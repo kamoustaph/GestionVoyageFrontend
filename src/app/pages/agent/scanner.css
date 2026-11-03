@@ -1,0 +1,36 @@
+.desk { display: grid; gap: 24px; align-items: start; }
+@media (min-width: 900px) { .desk { grid-template-columns: minmax(320px, 440px) 1fr; } }
+.left { display: flex; flex-direction: column; gap: 16px; }
+.controls { display: flex; flex-direction: column; gap: 12px; }
+.toggle { display: flex; gap: 10px; align-items: flex-start; font-size: .9rem; cursor: pointer; }
+.toggle input { width: 20px; height: 20px; accent-color: var(--baobab); margin: 2px 0 0; flex: none; }
+.manual { display: flex; flex-direction: column; gap: 10px; }
+.manual .row { flex-wrap: nowrap; }
+.code { text-transform: uppercase; letter-spacing: .14em; font-weight: 700; }
+.photo { align-self: flex-start; cursor: pointer; }
+
+.right { position: sticky; top: 92px; display: flex; flex-direction: column; gap: 14px; }
+.counters { display: flex; gap: 12px; }
+.counters div { flex: 1; display: flex; align-items: baseline; gap: 8px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); }
+.counters strong { font-family: var(--font-display); font-size: 1.8rem; line-height: 1; }
+.counters span { color: var(--muted); }
+
+.verdict { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
+.verdict.idle { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 56px 24px; color: var(--muted); }
+.verdict.idle h2 { color: var(--ink); margin: 8px 0 0; }
+.band { display: flex; gap: 16px; align-items: center; padding: 22px 24px; color: #fff; }
+.band h2 { color: #fff; margin: 0; font-size: clamp(1.6rem, 3vw, 2.2rem); }
+.band p { margin: 2px 0 0; opacity: .92; }
+.ok .band { background: var(--baobab); }
+.ko .band { background: var(--red); }
+.who { padding: 20px 24px 0; display: flex; flex-direction: column; }
+.who span { color: var(--muted); font-size: .85rem; }
+.who strong { font-family: var(--font-display); font-size: clamp(1.6rem, 3.4vw, 2.3rem); letter-spacing: -.02em; line-height: 1.1; }
+.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 0; padding: 18px 24px; }
+.facts dt { color: var(--muted); font-size: .8rem; }
+.facts dd { margin: 0; font-weight: 700; text-transform: capitalize; }
+.facts .big { font-family: var(--font-display); font-size: 2.2rem; line-height: 1; }
+.when { margin: 0 24px 8px; font-weight: 700; color: var(--red); }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; padding: 8px 24px 24px; }
+.big-btn { flex: 1; min-height: 56px; font-size: 1.08rem; }
+.hint { margin: -12px 24px 20px; color: var(--muted); font-size: .88rem; }

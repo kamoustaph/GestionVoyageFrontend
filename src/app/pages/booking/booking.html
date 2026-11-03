@@ -1,0 +1,125 @@
+<div class="wrap page">
+  @if (voyage(); as v) {
+    <ol class="progress no-print" aria-label="Étapes de la réservation">
+      <li [class.done]="etape() !== 'passagers'" [class.current]="etape() === 'passagers'">Passagers</li>
+      <li [class.done]="etape() === 'billets'" [class.current]="etape() === 'paiement'">Paiement</li>
+      <li [class.current]="etape() === 'billets'">Billets</li>
+    </ol>
+
+    @if (etape() !== 'billets') {
+      <div class="layout">
+        <div class="main">
+          @if (erreur()) { <div class="alert" role="alert">{{ erreur() }}</div> }
+
+          @if (etape() === 'passagers') {
+            <section class="panel">
+              <h1 class="h">Qui voyage ?</h1>
+              <p class="muted">Un billet par passager, au nom inscrit sur sa pièce d'identité. Le contrôleur peut la demander.</p>
+              <form (ngSubmit)="reserver()" class="stack">
+                @for (p of passagers(); track $index; let i = $index) {
+                  <div class="pax">
+                    <label class="field">
+                      <span>Passager {{ i + 1 }}</span>
+                      <input class="input" [name]="'p' + i" [ngModel]="p" (ngModelChange)="nommer(i, $event)"
+                             autocomplete="name" placeholder="Prénom et nom" required minlength="2" />
+                    </label>
+                    @if (passagers().length > 1) {
+                      <button type="button" class="btn btn-ghost btn-sm" (click)="retirer(i)" [attr.aria-label]="'Retirer le passager ' + (i + 1)">Retirer</button>
+                    }
+                  </div>
+                }
+                @if (passagers().length < 6 && passagers().length < v.placesDisponibles) {
+                  <button type="button" class="link-btn add" (click)="ajouter()">Ajouter un passager</button>
+                }
+                <button class="btn btn-primary btn-block" type="submit" [disabled]="envoi() || !v.reservable">
+                  @if (envoi()) { Réservation… } @else { Bloquer {{ passagers().length }} place{{ passagers().length > 1 ? 's' : '' }} et payer }
+                </button>
+                @if (!v.reservable) { <p class="alert info">Ce départ n'est plus ouvert à la réservation.</p> }
+              </form>
+            </section>
+          }
+
+          @if (etape() === 'paiement') {
+            <section class="panel">
+              <div class="row">
+                <h1 class="h">Paiement</h1>
+                <span class="spacer"></span>
+                <span class="timer num" [class.urgent]="restant() < 120" aria-live="polite">Places bloquées {{ compteur }}</span>
+              </div>
+              <p class="muted">Réservation <strong>{{ reservation()?.reference }}</strong>. Choisissez votre moyen de paiement.</p>
+
+              <form (ngSubmit)="payer()" class="stack">
+                <fieldset class="methods">
+                  <legend class="sr-only">Moyen de paiement</legend>
+                  @for (m of moyens; track m.id) {
+                    <label class="method" [class.selected]="methode() === m.id">
+                      <input type="radio" name="methode" [value]="m.id" [checked]="methode() === m.id" (change)="methode.set(m.id)" />
+                      <span class="swatch" [style.background]="m.couleur" aria-hidden="true"></span>
+                      <span><strong>{{ m.nom }}</strong><small>{{ m.detail }}</small></span>
+                    </label>
+                  }
+                </fieldset>
+
+                @if (moyenChoisi().mobile) {
+                  <label class="field">
+                    <span>Numéro {{ moyenChoisi().nom }}</span>
+                    <div class="phone">
+                      <span>+221</span>
+                      <input class="input" name="tel" [(ngModel)]="telephone" inputmode="tel" autocomplete="tel-national" placeholder="77 123 45 67" />
+                    </div>
+                    <small>Vous recevrez la demande de paiement sur ce numéro.</small>
+                  </label>
+                } @else {
+                  <p class="alert info">Démonstration : aucun numéro de carte n'est demandé, le paiement est simulé.</p>
+                }
+
+                <button class="btn btn-primary btn-block" type="submit" [disabled]="envoi() || restant() === 0">
+                  @if (envoi()) { Paiement en cours… } @else { Payer {{ reservation()?.montantTotal | fcfa }} }
+                </button>
+              </form>
+            </section>
+          }
+        </div>
+
+        <aside class="summary panel-flat" aria-label="Récapitulatif">
+          <div class="s-route">
+            <span>{{ v.villeDepart | codeVille }}</span><i aria-hidden="true"></i><span>{{ v.villeArrivee | codeVille }}</span>
+          </div>
+          <p class="s-cities">{{ v.villeDepart }} – {{ v.villeArrivee }}</p>
+          <dl>
+            <div><dt>Date</dt><dd class="cap">{{ v.dateDepart | date: 'EEEE d MMMM' }}</dd></div>
+            <div><dt>Départ</dt><dd class="num">{{ v.dateDepart | date: 'HH:mm' }}</dd></div>
+            <div><dt>Arrivée estimée</dt><dd class="num">{{ v.dateArriveeEstimee | date: 'HH:mm' }} ({{ v.dureeMinutes | duree }})</dd></div>
+            <div><dt>Classe</dt><dd>{{ v.classe | libelle }}</dd></div>
+            @if (v.gareDepart) { <div><dt>Gare</dt><dd>{{ v.gareDepart }}</dd></div> }
+            <div><dt>Places</dt><dd>{{ passagers().length }} × {{ v.prix | fcfa }}</dd></div>
+          </dl>
+          <div class="s-total"><span>Total</span><strong class="num">{{ total() | fcfa }}</strong></div>
+        </aside>
+      </div>
+    } @else {
+      @if (reservation(); as r) {
+        <section class="done">
+          <div class="done-head no-print">
+            <div>
+              <h1>Bon voyage !</h1>
+              <p class="muted">
+                Paiement {{ r.paiement?.methode | libelle }} reçu ({{ r.paiement?.transactionRef }}).
+                Vos billets sont aussi dans <a routerLink="/mes-voyages">Mes voyages</a>.
+              </p>
+            </div>
+            <button type="button" class="btn btn-ghost" (click)="imprimer()">Imprimer les billets</button>
+          </div>
+          <div class="tickets">
+            @for (b of r.billets; track b.id) { <app-ticket-card [billet]="b" /> }
+          </div>
+          <p class="muted no-print tip">Présentez-vous 30 minutes avant le départ. Chaque billet ne peut être scanné qu'une fois.</p>
+        </section>
+      }
+    }
+  } @else if (erreur()) {
+    <div class="panel empty"><h3>{{ erreur() }}</h3><a class="btn btn-primary" routerLink="/voyages">Voir les départs</a></div>
+  } @else {
+    <div class="loading"><div class="spinner"></div></div>
+  }
+</div>
