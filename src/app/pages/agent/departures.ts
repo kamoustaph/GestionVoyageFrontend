@@ -16,7 +16,7 @@ import { Voyage } from '../../core/models';
     @if (chargement()) { <div class="loading"><div class="spinner"></div></div> }
     @else if (departs().length === 0) { <div class="panel empty"><h3>Aucun départ aujourd'hui</h3></div> }
     @else {
-      <ul class="list">
+      <ul class="list stagger">
         @for (d of departs(); track d.id) {
           <li>
             <a [routerLink]="[d.id]">

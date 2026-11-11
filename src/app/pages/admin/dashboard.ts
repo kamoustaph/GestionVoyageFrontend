@@ -36,9 +36,9 @@ import { Stats } from '../../core/models';
             }
             @for (b of barres(); track b.jour) {
               <g>
-                <title>{{ b.jour | date: 'EEEE d MMMM' }} : {{ b.montant | fcfa }}, {{ b.billets }} billets</title>
+                <title>{{ b.jour + 'T12:00:00Z' | date: 'EEEE d MMMM' }} : {{ b.montant | fcfa }}, {{ b.billets }} billet{{ b.billets > 1 ? 's' : '' }}</title>
                 <rect [attr.x]="b.x" [attr.y]="b.y" [attr.width]="b.w" [attr.height]="b.h" rx="3" [class.today]="$last" class="bar" />
-                <text [attr.x]="b.x + b.w / 2" [attr.y]="H - 6" text-anchor="middle" class="axis">{{ b.jour | date: 'd' }}</text>
+                <text [attr.x]="b.x + b.w / 2" [attr.y]="H - 6" text-anchor="middle" class="axis">{{ b.jour + 'T12:00:00Z' | date: 'd' }}</text>
               </g>
             }
           </svg>
@@ -52,7 +52,7 @@ import { Stats } from '../../core/models';
               <li>
                 <span class="name">{{ t.depart }} – {{ t.arrivee }}</span>
                 <span class="track"><span [style.width.%]="100 * t.billets / s.topTrajets[0].billets"></span></span>
-                <span class="num val">{{ t.billets }} billets</span>
+                <span class="num val">{{ t.billets }} billet{{ t.billets > 1 ? 's' : '' }}</span>
               </li>
             }
           </ol>

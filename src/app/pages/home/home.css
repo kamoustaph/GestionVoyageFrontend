@@ -1,21 +1,42 @@
 .hero { background: var(--surface); border-bottom: 1px solid var(--line); padding: 40px 0 48px; }
 .hero-grid { display: grid; gap: 32px; align-items: start; }
 @media (min-width: 1040px) { .hero-grid { grid-template-columns: 1.1fr 1fr; gap: 48px; padding-top: 16px; } }
-.pitch h1 { max-width: 15ch; margin-bottom: 18px; }
+.pitch > * { animation: yoon-rise .6s var(--ease-out) both; }
+.pitch > :nth-child(2) { animation-delay: .06s; }
+.pitch > :nth-child(3) { animation-delay: .12s; }
+.pitch > :nth-child(4) { animation-delay: .18s; }
+.kicker {
+  display: inline-flex; align-items: center; gap: 10px; margin-bottom: 18px; padding: 6px 14px 6px 10px;
+  border-radius: 999px; background: var(--leaf); color: var(--baobab); font-weight: 600; font-size: .9rem;
+}
+.kicker .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--baobab); box-shadow: 0 0 0 0 rgba(14, 94, 59, .5); animation: yoon-ping 2s ease-out infinite; }
+@keyframes yoon-ping { 0% { box-shadow: 0 0 0 0 rgba(14, 94, 59, .45); } 80%, 100% { box-shadow: 0 0 0 9px rgba(14, 94, 59, 0); } }
+.pitch h1 { max-width: 15ch; margin-bottom: 18px; font-size: clamp(2.2rem, 5vw, 3.7rem); }
+/* Mot mis en valeur : surligné jaune soleil qui se trace à l'arrivée. */
+.pitch h1 mark {
+  color: inherit; background: none; position: relative; z-index: 0; white-space: nowrap;
+}
+.pitch h1 mark::after {
+  content: ''; position: absolute; z-index: -1; left: -.08em; right: -.08em; bottom: .06em; height: .34em;
+  background: var(--sun); border-radius: 4px; transform: scaleX(0); transform-origin: left;
+  animation: yoon-trace .7s var(--ease-out) .5s forwards;
+}
+@keyframes yoon-trace { to { transform: scaleX(1); } }
 .lead { font-size: 1.12rem; color: var(--muted); max-width: 52ch; }
-.search-box { margin-top: 28px; padding: 20px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--page); }
+.search-box { margin-top: 28px; padding: 20px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow-md); }
 
 /* Tableau des départs, à la manière des écrans de gare */
-.board { background: var(--board); color: #fff; border-radius: var(--r-lg); padding: 20px 20px 16px; }
+.board { background: var(--board); color: #fff; border-radius: var(--r-lg); padding: 20px 20px 16px; box-shadow: var(--shadow-lg); animation: yoon-pop .7s var(--ease-out) .15s both; }
 .board-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 14px; }
 .board-head h2 { font-size: 1.25rem; margin: 0; color: #fff; }
-.clock { font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; color: var(--sun); }
+.clock { font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; color: var(--sun); display: flex; flex-direction: column; align-items: flex-end; line-height: 1.1; }
+.clock small { font: 600 .7rem var(--font-body); color: #9cc3ad; letter-spacing: .02em; }
 .board-cols { display: grid; grid-template-columns: 64px 1fr auto; gap: 12px; font-size: .78rem; color: #9cc3ad; padding: 0 8px 8px; border-bottom: 1px solid var(--board-line); }
 .board-cols .r { text-align: right; }
 .board-rows { list-style: none; margin: 0; padding: 0; }
 .board-rows li { border-bottom: 1px solid var(--board-line); }
-.board-rows a { display: grid; grid-template-columns: 64px 1fr auto; gap: 12px; align-items: center; padding: 11px 8px; color: #fff; text-decoration: none; border-radius: 6px; }
-.board-rows a:hover { background: var(--board-line); }
+.board-rows a { transition: background-color var(--t-fast), transform var(--t-fast) var(--ease-out); display: grid; grid-template-columns: 64px 1fr auto; gap: 12px; align-items: center; padding: 11px 8px; color: #fff; text-decoration: none; border-radius: 6px; }
+.board-rows a:hover { background: var(--board-line); transform: translateX(4px); }
 .t { font-family: var(--font-display); font-weight: 700; font-size: 1.35rem; color: var(--sun); }
 .dest { display: flex; flex-direction: column; min-width: 0; }
 .codes { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; letter-spacing: .04em; }

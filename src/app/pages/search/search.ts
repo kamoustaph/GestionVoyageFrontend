@@ -36,7 +36,7 @@ interface Groupe { jour: string; voyages: Voyage[]; }
           <p>
             @if (!chargement()) {
               {{ voyages().length }} départ{{ voyages().length > 1 ? 's' : '' }}
-              {{ date() ? 'le ' + (date() | date: 'EEEE d MMMM') : 'dans les 30 prochains jours' }}
+              {{ date() ? 'le ' + (date() + 'T12:00:00Z' | date: 'EEEE d MMMM') : 'dans les 30 prochains jours' }}
             }
           </p>
         </div>
@@ -53,10 +53,10 @@ interface Groupe { jour: string; voyages: Voyage[]; }
         </div>
       } @else {
         @for (g of groupes(); track g.jour) {
-          <h2 class="day-title">{{ g.jour | date: 'EEEE d MMMM' }}</h2>
-          <ul class="results">
+          <h2 class="day-title">{{ g.jour + 'T12:00:00Z' | date: 'EEEE d MMMM' }}</h2>
+          <ul class="results stagger">
             @for (v of g.voyages; track v.id) {
-              <li class="result" [class.full]="!v.reservable">
+              <li class="result lift" [class.full]="!v.reservable">
                 <div class="time">
                   <strong class="num">{{ v.dateDepart | date: 'HH:mm' }}</strong>
                   <span class="num">arr. {{ v.dateArriveeEstimee | date: 'HH:mm' }}</span>
@@ -124,7 +124,7 @@ export class Search {
 
   jours = Array.from({ length: 7 }, (_, i) => {
     const iso = aujourdhuiIso(i);
-    return { iso, d: new Date(iso + 'T12:00:00') };
+    return { iso, d: new Date(iso + 'T12:00:00Z') };
   });
 
   titre = computed(() => {

@@ -1,7 +1,8 @@
 <section class="hero">
   <div class="wrap hero-grid">
     <div class="pitch">
-      <h1>Votre place dans le car, réservée avant d'aller à la gare.</h1>
+      <p class="kicker"><span class="dot" aria-hidden="true"></span>17 villes · billet QR · Wave et Orange Money</p>
+      <h1>Votre place dans le car, <mark>réservée</mark> avant d'aller à la gare.</h1>
       <p class="lead">
         Les lignes Dakar, Saint-Louis, Touba, Ziguinchor et 13 autres villes.
         Payez par Wave ou Orange Money, recevez un billet QR, montrez-le au contrôleur.
@@ -14,7 +15,7 @@
     <aside class="board" aria-labelledby="board-title">
       <div class="board-head">
         <h2 id="board-title">Prochains départs</h2>
-        <span class="clock num" aria-label="Heure actuelle">{{ heure() | date: 'HH:mm:ss' }}</span>
+        <span class="clock num" aria-label="Heure actuelle à Dakar"><small>Heure de Dakar</small>{{ heure() | date: 'HH:mm:ss' }}</span>
       </div>
       <div class="board-cols" aria-hidden="true">
         <span>Heure</span><span>Destination</span><span class="r">Statut</span>
@@ -27,7 +28,7 @@
       } @else if (departs().length === 0) {
         <div class="board-empty">Aucun départ programmé pour le moment.</div>
       } @else {
-        <ol class="board-rows">
+        <ol class="board-rows stagger">
           @for (v of departs(); track v.id) {
             @let s = statut(v);
             <li>
@@ -53,7 +54,7 @@
     <h2 id="lines-title">Les lignes les plus prises</h2>
     <p class="muted">Départs tous les jours depuis la gare des Baux maraîchers.</p>
   </div>
-  <ul class="line-list">
+  <ul class="line-list stagger">
     @for (l of lignes; track l.a) {
       <li>
         <a [routerLink]="['/voyages']" [queryParams]="{ depart: l.de, arrivee: l.a }">

@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Api, messageErreur } from '../../core/api.service';
+import { Confirmation } from '../../shared/confirm-dialog';
 import { CodeVillePipe, FcfaPipe, LibellePipe, TonPipe, aujourdhuiIso } from '../../core/format';
 import { ClasseVoyage, StatutVoyage, Voyage, VoyageRequest } from '../../core/models';
 
@@ -16,8 +17,7 @@ import { ClasseVoyage, StatutVoyage, Voyage, VoyageRequest } from '../../core/mo
     .mini { flex: 1; height: 6px; background: var(--line-soft); border-radius: 999px; overflow: hidden; }
     .mini span { display: block; height: 100%; background: var(--baobab); }
     .acts { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
-    dialog { border: 0; border-radius: var(--r-lg); padding: 0; width: min(680px, calc(100vw - 32px)); }
-    dialog::backdrop { background: rgba(19, 34, 27, .55); }
+    dialog { width: min(680px, calc(100vw - 32px)); }
     .dlg { padding: 24px; }
     .dlg-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
     .count { color: var(--muted); margin: 0 0 10px; font-size: .9rem; }
@@ -25,6 +25,7 @@ import { ClasseVoyage, StatutVoyage, Voyage, VoyageRequest } from '../../core/mo
 })
 export class Trips implements OnInit {
   private api = inject(Api);
+  private confirmation = inject(Confirmation);
 
   voyages = signal<Voyage[]>([]);
   villes = signal<string[]>([]);
@@ -88,9 +89,13 @@ export class Trips implements OnInit {
     });
   }
 
-  statut(v: Voyage, statut: StatutVoyage): void {
+  async statut(v: Voyage, statut: StatutVoyage): Promise<void> {
     const vendues = v.placesTotal - v.placesDisponibles;
-    if (statut === 'ANNULE' && !confirm(`Annuler ce départ ? ${vendues} billet(s) vendu(s) seront annulés.`)) return;
+    if (statut === 'ANNULE' && !(await this.confirmation.demander({
+      titre: `Annuler le départ ${v.villeDepart} – ${v.villeArrivee} ?`,
+      message: `${vendues} billet(s) vendu(s) seront annulés. Les voyageurs ne pourront plus embarquer.`,
+      ok: 'Annuler le départ', non: 'Garder le départ', danger: true,
+    }))) return;
     this.api.statutVoyage(v.id, statut).subscribe({ next: () => this.charger(), error: (e) => this.erreur.set(messageErreur(e)) });
   }
 

@@ -1,12 +1,14 @@
-.auth { display: grid; min-height: calc(100vh - 69px); }
+.auth { display: grid; min-height: calc(100vh - 75px); }
 @media (min-width: 960px) { .auth { grid-template-columns: 1fr 1fr; } }
 .side { display: none; background: var(--board); color: #fff; padding: 56px; }
 @media (min-width: 960px) { .side { display: flex; flex-direction: column; justify-content: space-between; } }
 .side h2 { color: #fff; font-size: 2.2rem; max-width: 14ch; }
 .side p { color: #b9d6c6; max-width: 40ch; }
+.side > * { animation: yoon-rise .6s var(--ease-out) both; }
+.side > :nth-child(2) { animation-delay: .1s; }
 .side .codes { font-family: var(--font-display); font-weight: 800; font-size: 4.5rem; letter-spacing: -.04em; line-height: .9; color: var(--sun); }
 .form-side { display: flex; align-items: center; justify-content: center; padding: 40px 16px; }
-.card { width: 100%; max-width: 420px; }
+.card { width: 100%; max-width: 420px; animation: yoon-rise .5s var(--ease-out) both; }
 .card h1 { font-size: 2rem; margin-bottom: 6px; }
 .card > p { color: var(--muted); margin-bottom: 24px; }
 .switch { margin-top: 20px; text-align: center; color: var(--muted); }
