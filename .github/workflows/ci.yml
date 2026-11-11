@@ -3,6 +3,8 @@
 # - Pull request et push sur main : build de production Angular.
 # - Push sur main (ou lancement manuel) : image Docker publiée dans Amazon ECR
 #   avec deux tags : le SHA du commit et "latest".
+# - Puis déploiement automatique sur dev : deploy.sh lancé par SSM sur les
+#   instances, avec l'image du commit (aucune commande à taper).
 #
 # Authentification AWS par OIDC : aucune clé d'accès stockée dans GitHub.
 # Secret requis : AWS_DEPLOY_ROLE_ARN (rôle yoon-app-deploy-role, créé dans
@@ -85,3 +87,81 @@ jobs:
             echo "| commit | \`${{ steps.meta.outputs.image }}:${{ github.sha }}\` |"
             echo "| latest | \`${{ steps.meta.outputs.image }}:latest\` |"
           } >> "$GITHUB_STEP_SUMMARY"
+
+  # Déploiement automatique sur dev après chaque fusion sur main.
+  # Lance /opt/yoon/deploy.sh sur les instances dev (tag Environment=dev, Project=moustapha)
+  # avec l'image du commit, puis attend le résultat de chaque instance.
+  deploy:
+    name: Déployer sur dev
+    needs: image
+    runs-on: ubuntu-24.04
+    environment: dev
+    concurrency:
+      group: deploy-dev-web
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Connexion à AWS (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Lancer deploy.sh sur les instances
+        id: envoi
+        run: |
+          set -euo pipefail
+          INSTANCES=$(aws ec2 describe-instances \
+            --filters "Name=tag:Environment,Values=dev" "Name=tag:Project,Values=moustapha" "Name=instance-state-name,Values=running" \
+            --query "Reservations[].Instances[].InstanceId" --output text)
+          if [ -z "$INSTANCES" ]; then
+            echo "::warning::Aucune instance dev en marche (environnement détruit ?) : déploiement ignoré."
+            echo "id=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "Instances : $INSTANCES"
+          ID=$(aws ssm send-command \
+            --document-name AWS-RunShellScript \
+            --instance-ids $INSTANCES \
+            --comment "${{ github.repository }}@${GITHUB_SHA::7}" \
+            --parameters "commands=[\"sudo /opt/yoon/deploy.sh web ${{ github.sha }}\"]" \
+            --timeout-seconds 600 \
+            --query "Command.CommandId" --output text)
+          echo "Commande SSM : $ID"
+          echo "id=$ID" >> "$GITHUB_OUTPUT"
+
+      - name: Attendre le résultat
+        if: steps.envoi.outputs.id != ''
+        env:
+          ID: ${{ steps.envoi.outputs.id }}
+        run: |
+          set -euo pipefail
+          # deploy.sh attend jusqu'à 4 min que l'API soit prête : on patiente au plus 8 min.
+          for i in $(seq 1 48); do
+            sleep 10
+            ETATS=$(aws ssm list-command-invocations --command-id "$ID" \
+              --query "CommandInvocations[].Status" --output text)
+            echo "[$((i*10)) s] $ETATS"
+            if [ -n "$ETATS" ] && ! echo "$ETATS" | grep -qE "Pending|InProgress|Delayed"; then break; fi
+          done
+          ECHEC=0
+          for INST in $(aws ssm list-command-invocations --command-id "$ID" --query "CommandInvocations[].InstanceId" --output text); do
+            R=$(aws ssm get-command-invocation --command-id "$ID" --instance-id "$INST")
+            ETAT=$(echo "$R" | jq -r .Status)
+            echo "::group::$INST : $ETAT"
+            echo "$R" | jq -r .StandardOutputContent
+            echo "$R" | jq -r .StandardErrorContent
+            echo "::endgroup::"
+            echo "| \`$INST\` | $ETAT |" >> lignes.md
+            [ "$ETAT" = "Success" ] || ECHEC=1
+          done
+          {
+            echo "### Déploiement dev (web, \`${GITHUB_SHA::7}\`)"
+            echo ""
+            echo "| Instance | Résultat |"
+            echo "|---|---|"
+            cat lignes.md
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "$ECHEC" = 1 ]; then echo "::error::Le déploiement a échoué sur au moins une instance (voir les journaux ci-dessus)."; exit 1; fi
