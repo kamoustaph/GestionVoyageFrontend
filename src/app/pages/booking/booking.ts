@@ -6,6 +6,7 @@ import { Api, messageErreur } from '../../core/api.service';
 import { Auth } from '../../core/auth.service';
 import { CodeVillePipe, DureePipe, FcfaPipe, LibellePipe } from '../../core/format';
 import { MethodePaiement, Reservation, Voyage } from '../../core/models';
+import { telechargerBillets } from '../../shared/billet-pdf';
 import { TicketCard } from '../../shared/ticket-card';
 
 type Etape = 'passagers' | 'paiement' | 'billets';
@@ -34,6 +35,8 @@ export class Booking implements OnInit, OnDestroy {
   envoi = signal(false);
   erreur = signal('');
   restant = signal(0);
+  /** Téléchargement des billets PDF : en cours, terminé (nom du fichier) ou en échec. */
+  pdf = signal<{ etat: 'encours' | 'ok' | 'erreur'; fichier?: string } | null>(null);
   private minuterie?: ReturnType<typeof setInterval>;
 
   moyens: Moyen[] = [
@@ -110,13 +113,22 @@ export class Booking implements OnInit, OnDestroy {
         this.envoi.set(false);
         clearInterval(this.minuterie);
         window.scrollTo({ top: 0 });
+        // Les billets sont téléchargés automatiquement dès que le paiement est confirmé.
+        this.telecharger();
       },
       error: (e) => { this.erreur.set(messageErreur(e)); this.envoi.set(false); },
     });
   }
 
-  imprimer(): void {
-    window.print();
+  async telecharger(): Promise<void> {
+    const r = this.reservation();
+    if (!r) return;
+    this.pdf.set({ etat: 'encours' });
+    try {
+      this.pdf.set({ etat: 'ok', fichier: await telechargerBillets(r.billets, r) });
+    } catch {
+      this.pdf.set({ etat: 'erreur' });
+    }
   }
 
   private demarrerCompteur(expireLe: string | null): void {

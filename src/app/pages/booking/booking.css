@@ -48,3 +48,6 @@
 .done-head h1 { margin-bottom: 6px; }
 .tickets { display: grid; gap: 20px; max-width: 820px; }
 .tip { margin-top: 20px; }
+.dl { display: flex; align-items: center; gap: 10px; margin: -8px 0 20px; padding: 12px 16px; border-radius: var(--r-md); background: var(--leaf); color: var(--baobab); font-weight: 500; animation: yoon-rise .4s var(--ease-out) both; }
+.dl.err { background: var(--red-soft); color: var(--red); }
+.spinner.small { width: 18px; height: 18px; border-width: 2.5px; }

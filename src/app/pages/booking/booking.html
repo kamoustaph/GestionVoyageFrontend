@@ -108,8 +108,23 @@
                 Vos billets sont aussi dans <a routerLink="/mes-voyages">Mes voyages</a>.
               </p>
             </div>
-            <button type="button" class="btn btn-ghost" (click)="imprimer()">Imprimer les billets</button>
+            <button type="button" class="btn btn-ghost" (click)="telecharger()" [disabled]="pdf()?.etat === 'encours'">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14" /></svg>
+              Télécharger à nouveau
+            </button>
           </div>
+          @if (pdf(); as p) {
+            <div class="dl" [class.err]="p.etat === 'erreur'" role="status" aria-live="polite">
+              @switch (p.etat) {
+                @case ('encours') { <span class="spinner small"></span> Préparation de vos billets en PDF… }
+                @case ('ok') {
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10" /></svg>
+                  <span>Billets téléchargés : <strong>{{ p.fichier }}</strong>. Gardez-les sur votre téléphone.</span>
+                }
+                @case ('erreur') { Le téléchargement n'a pas abouti. Utilisez « Télécharger à nouveau ». }
+              }
+            </div>
+          }
           <div class="tickets">
             @for (b of r.billets; track b.id) { <app-ticket-card [billet]="b" /> }
           </div>
