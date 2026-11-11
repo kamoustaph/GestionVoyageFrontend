@@ -2,6 +2,7 @@ import { Component, OnInit, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Api, messageErreur } from '../../core/api.service';
 import { Billet } from '../../core/models';
+import { telechargerBillets } from '../../shared/billet-pdf';
 import { TicketCard } from '../../shared/ticket-card';
 
 @Component({
@@ -12,7 +13,9 @@ import { TicketCard } from '../../shared/ticket-card';
       <a routerLink="/mes-voyages" class="no-print back">Mes voyages</a>
       @if (billet(); as b) {
         <app-ticket-card [billet]="b" />
-        <button type="button" class="btn btn-ghost no-print" (click)="imprimer()">Imprimer</button>
+        @if (b.qrContenu) {
+          <button type="button" class="btn btn-primary dl" (click)="telecharger(b)" [disabled]="envoi()">Télécharger le billet (PDF)</button>
+        }
       } @else if (erreur()) {
         <div class="panel empty"><h3>{{ erreur() }}</h3></div>
       } @else {
@@ -20,7 +23,7 @@ import { TicketCard } from '../../shared/ticket-card';
       }
     </div>
   `,
-  styles: `.narrow { max-width: 860px; display: flex; flex-direction: column; gap: 16px; } .back { font-weight: 700; }`,
+  styles: `.narrow { max-width: 860px; display: flex; flex-direction: column; gap: 16px; } .back { font-weight: 700; } .dl { align-self: flex-start; }`,
 })
 export class TicketPage implements OnInit {
   private api = inject(Api);
@@ -35,7 +38,16 @@ export class TicketPage implements OnInit {
     });
   }
 
-  imprimer(): void {
-    window.print();
+  envoi = signal(false);
+
+  async telecharger(b: Billet): Promise<void> {
+    this.envoi.set(true);
+    try {
+      await telechargerBillets([b]);
+    } catch (e) {
+      this.erreur.set(e instanceof Error ? e.message : 'Téléchargement impossible');
+    } finally {
+      this.envoi.set(false);
+    }
   }
 }

@@ -33,7 +33,11 @@
             ],
             "allowedCommonJsDependencies": [
               "qrcode",
-              "jsqr"
+              "jsqr",
+              "core-js",
+              "html2canvas",
+              "raf",
+              "rgbcolor"
             ]
           },
           "configurations": {
