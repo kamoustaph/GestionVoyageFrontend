@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Api, messageErreur } from '../../core/api.service';
+import { Confirmation } from '../../shared/confirm-dialog';
 import { CodeVillePipe, FcfaPipe, LibellePipe, TonPipe } from '../../core/format';
 import { Billet, Reservation } from '../../core/models';
 import { TicketCard } from '../../shared/ticket-card';
@@ -39,7 +40,7 @@ import { TicketCard } from '../../shared/ticket-card';
             <a class="btn btn-primary" routerLink="/voyages">Voir les départs</a>
           </div>
         } @else {
-          <div class="tickets">
+          <div class="tickets stagger">
             @for (b of aVenir(); track b.id) {
               <app-ticket-card [billet]="b" />
             }
@@ -103,6 +104,7 @@ import { TicketCard } from '../../shared/ticket-card';
 })
 export class MyTrips implements OnInit {
   private api = inject(Api);
+  private confirmation = inject(Confirmation);
 
   onglet = signal<'billets' | 'reservations'>('billets');
   billets = signal<Billet[]>([]);
@@ -134,8 +136,13 @@ export class MyTrips implements OnInit {
       && !r.billets.some((b) => b.statut === 'UTILISE');
   }
 
-  annuler(r: Reservation): void {
-    if (!confirm(`Annuler la réservation ${r.reference} (${r.nombrePlaces} place(s)) ?`)) return;
+  async annuler(r: Reservation): Promise<void> {
+    const oui = await this.confirmation.demander({
+      titre: `Annuler la réservation ${r.reference} ?`,
+      message: `${r.nombrePlaces} place(s) seront libérées et les billets ne seront plus valables. Cette action est définitive.`,
+      ok: 'Annuler la réservation', non: 'Garder', danger: true,
+    });
+    if (!oui) return;
     this.enCours.set(r.id);
     this.api.annuler(r.id).subscribe({
       next: () => { this.enCours.set(null); this.charger(); },

@@ -27,6 +27,8 @@
               }
             ],
             "styles": [
+              "@fontsource-variable/plus-jakarta-sans/index.css",
+              "@fontsource-variable/inter/index.css",
               "src/styles.css"
             ],
             "allowedCommonJsDependencies": [
@@ -90,6 +92,8 @@
             ],
             "tsConfig": "tsconfig.spec.json",
             "styles": [
+              "@fontsource-variable/plus-jakarta-sans/index.css",
+              "@fontsource-variable/inter/index.css",
               "src/styles.css"
             ]
           }

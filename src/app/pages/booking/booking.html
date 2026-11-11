@@ -1,9 +1,9 @@
 <div class="wrap page">
   @if (voyage(); as v) {
     <ol class="progress no-print" aria-label="Étapes de la réservation">
-      <li [class.done]="etape() !== 'passagers'" [class.current]="etape() === 'passagers'">Passagers</li>
-      <li [class.done]="etape() === 'billets'" [class.current]="etape() === 'paiement'">Paiement</li>
-      <li [class.current]="etape() === 'billets'">Billets</li>
+      <li [class.done]="etape() !== 'passagers'" [class.current]="etape() === 'passagers'">1. Passagers</li>
+      <li [class.done]="etape() === 'billets'" [class.current]="etape() === 'paiement'">2. Paiement</li>
+      <li [class.current]="etape() === 'billets'">3. Billets</li>
     </ol>
 
     @if (etape() !== 'billets') {
@@ -44,12 +44,12 @@
               <div class="row">
                 <h1 class="h">Paiement</h1>
                 <span class="spacer"></span>
-                <span class="timer num" [class.urgent]="restant() < 120" aria-live="polite">Places bloquées {{ compteur }}</span>
+                <span class="timer num" [class.urgent]="restant() < 120" [class.last]="restant() > 0 && restant() <= 60" aria-live="polite">Places bloquées {{ compteur }}</span>
               </div>
               <p class="muted">Réservation <strong>{{ reservation()?.reference }}</strong>. Choisissez votre moyen de paiement.</p>
 
               <form (ngSubmit)="payer()" class="stack">
-                <fieldset class="methods">
+                <fieldset class="methods stagger">
                   <legend class="sr-only">Moyen de paiement</legend>
                   @for (m of moyens; track m.id) {
                     <label class="method" [class.selected]="methode() === m.id">

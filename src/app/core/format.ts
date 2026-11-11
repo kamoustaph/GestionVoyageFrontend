@@ -86,9 +86,11 @@ export class TonPipe implements PipeTransform {
 
 export const FORMAT_PIPES = [CodeVillePipe, FcfaPipe, DureePipe, LibellePipe, TonPipe] as const;
 
-/** Date du jour au format AAAA-MM-JJ, heure locale. */
+/** Fuseau des horaires de Yoon. */
+export const FUSEAU = 'Africa/Dakar';
+
+/** Date du jour à Dakar au format AAAA-MM-JJ (et non celle du fuseau du navigateur). */
 export function aujourdhuiIso(decalageJours = 0): string {
-  const d = new Date();
-  d.setDate(d.getDate() + decalageJours);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const d = new Date(Date.now() + decalageJours * 86_400_000);
+  return new Intl.DateTimeFormat('en-CA', { timeZone: FUSEAU, year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
 }
